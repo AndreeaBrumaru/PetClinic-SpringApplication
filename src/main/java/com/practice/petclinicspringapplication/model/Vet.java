@@ -1,10 +1,12 @@
 package com.practice.petclinicspringapplication.model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
-@Table(name="vets")
 public class Vet {
 
     @Id

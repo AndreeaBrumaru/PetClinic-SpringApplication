@@ -12,10 +12,10 @@ public class Pet{
     private Long idPet;
     private String namePet;
     private String petType;
+    private LocalDate birthDate;
     @ManyToOne
     @JoinColumn(name = "idOwner")
     private Owner owner;
-    private LocalDate birthDate;
 
     //Constructors
     public Pet(String namePet, LocalDate birthDate, String petType) {

@@ -2,6 +2,7 @@ package com.practice.petclinicspringapplication.controller;
 
 import com.practice.petclinicspringapplication.model.Vet;
 import com.practice.petclinicspringapplication.service.VetService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -35,8 +36,8 @@ public class VetController {
 
     //See all vets
     @GetMapping("/vets")
-    public Iterable<Vet> getVets() {
-        return vetService.findAll();
+    public ResponseEntity getVets() {
+        return ResponseEntity.ok(vetService.findAll());
     }
 
     //Count all vets
