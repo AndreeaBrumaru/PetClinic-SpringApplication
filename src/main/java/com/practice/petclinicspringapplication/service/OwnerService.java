@@ -50,9 +50,9 @@ public class OwnerService {
     public List<Owner> findAll()
     {
         var it = ownerRepo.findAll();
-        List<Owner> owner = new ArrayList<>();
-        it.forEach(owner::add);
-        return owner;
+        List<Owner> owners = new ArrayList<>();
+        it.forEach(owners::add);
+        return owners;
     }
 
     //Count all owner

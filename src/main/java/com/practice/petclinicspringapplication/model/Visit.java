@@ -24,6 +24,21 @@ public class Visit {
     public Visit() {
     }
 
+    public Visit(String reasonForVisit, Owner owner, Pet pet, Vet vet) {
+        this.reasonForVisit = reasonForVisit;
+        this.owner = owner;
+        this.pet = pet;
+        this.vet = vet;
+    }
+
+    public Visit(String reasonForVisit, LocalDate dateOfVisit, Owner owner, Pet pet, Vet vet) {
+        this.reasonForVisit = reasonForVisit;
+        this.dateOfVisit = dateOfVisit;
+        this.owner = owner;
+        this.pet = pet;
+        this.vet = vet;
+    }
+
     //Getters and Setters
     public Long getIdVisit() {
         return idVisit;

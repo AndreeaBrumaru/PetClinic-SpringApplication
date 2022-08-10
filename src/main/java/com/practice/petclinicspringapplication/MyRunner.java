@@ -6,6 +6,7 @@ import com.practice.petclinicspringapplication.model.Vet;
 import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import com.practice.petclinicspringapplication.repository.VetRepo;
+import com.practice.petclinicspringapplication.repository.VisitRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -23,12 +24,14 @@ public class MyRunner implements CommandLineRunner {
     private final VetRepo vetRepo;
     private final PetRepo petRepo;
     private final OwnerRepo ownerRepo;
+    private final VisitRepo visitRepo;
 
     //Constructor
-    public MyRunner(VetRepo vetRepo, PetRepo petRepo, OwnerRepo ownerRepo) {
+    public MyRunner(VetRepo vetRepo, PetRepo petRepo, OwnerRepo ownerRepo, VisitRepo visitRepo) {
         this.vetRepo = vetRepo;
         this.petRepo = petRepo;
         this.ownerRepo = ownerRepo;
+        this.visitRepo = visitRepo;
     }
 
     //Methods
@@ -58,5 +61,11 @@ public class MyRunner implements CommandLineRunner {
 
         Owner o1 = new Owner("Andreea", "B.");
         ownerRepo.save(o1);
+
+        logger.info(">> initializing visit owners");
+        //TODO Make visits work
+//
+//        Visit vis1 = new Visit("Just wanted attention",LocalDate.now(), o1, p2, v1);
+//        visitRepo.save(vis1);
     }
 }
