@@ -1,7 +1,9 @@
 package com.practice.petclinicspringapplication;
 
+import com.practice.petclinicspringapplication.model.Owner;
 import com.practice.petclinicspringapplication.model.Pet;
 import com.practice.petclinicspringapplication.model.Vet;
+import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import com.practice.petclinicspringapplication.repository.VetRepo;
 import org.slf4j.Logger;
@@ -20,11 +22,13 @@ public class MyRunner implements CommandLineRunner {
 
     private final VetRepo vetRepo;
     private final PetRepo petRepo;
+    private final OwnerRepo ownerRepo;
 
     //Constructor
-    public MyRunner(VetRepo vetRepo, PetRepo petRepo) {
+    public MyRunner(VetRepo vetRepo, PetRepo petRepo, OwnerRepo ownerRepo) {
         this.vetRepo = vetRepo;
         this.petRepo = petRepo;
+        this.ownerRepo = ownerRepo;
     }
 
     //Methods
@@ -33,7 +37,7 @@ public class MyRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         logger.info(">> initializing test vets");
 
-        Vet v1 = new Vet("Andreea", "B.");
+        Vet v1 = new Vet("Diana", "A.");
         vetRepo.save(v1);
 
         Vet v2 = new Vet("Leo", "F.");
@@ -49,5 +53,10 @@ public class MyRunner implements CommandLineRunner {
 
         Pet p2 = new Pet("Chocola", LocalDate.of(2018, 03, 06), "Cat");
         petRepo.save(p2);
+
+        logger.info(">> initializing test owners");
+
+        Owner o1 = new Owner("Andreea", "B.");
+        ownerRepo.save(o1);
     }
 }

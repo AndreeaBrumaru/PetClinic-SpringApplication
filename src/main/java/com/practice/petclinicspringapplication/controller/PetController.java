@@ -4,7 +4,6 @@ import com.practice.petclinicspringapplication.model.Pet;
 import com.practice.petclinicspringapplication.service.PetService;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -19,10 +18,18 @@ public class PetController
 
     //Methods
     //Add pet
+    //TODO cum adaug localdate ca parametru
+//    @PostMapping("pets/add")
+//    public void add(@RequestParam String name, @RequestParam String type, @RequestParam LocalDate birthDate)
+//    {
+//        Pet newPet = new Pet(name, birthDate, type);
+//        petService.add(newPet);
+//    }
+
     @PostMapping("pets/add")
-    public void add(@RequestParam String name, @RequestParam String type, @RequestParam LocalDate birthDate)
+    public void add(@RequestParam String name, @RequestParam String type)
     {
-        Pet newPet = new Pet(name, birthDate, type);
+        Pet newPet = new Pet(name, type);
         petService.add(newPet);
     }
 
