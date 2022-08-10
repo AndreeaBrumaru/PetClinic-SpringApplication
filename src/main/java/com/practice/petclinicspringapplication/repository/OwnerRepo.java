@@ -1,6 +1,6 @@
-package com.guru.sftpetclinic.repositories;
+package com.practice.petclinicspringapplication.repository;
 
-import com.guru.sftpetclinic.model.Owner;
+import com.practice.petclinicspringapplication.model.Owner;
 import org.springframework.data.repository.CrudRepository;
 
 public interface OwnerRepo extends CrudRepository<Owner, Long> {

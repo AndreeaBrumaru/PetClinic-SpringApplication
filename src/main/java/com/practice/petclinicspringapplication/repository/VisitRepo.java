@@ -1,6 +1,6 @@
-package com.guru.sftpetclinic.repositories;
+package com.practice.petclinicspringapplication.repository;
 
-import com.guru.sftpetclinic.model.Visit;
+import com.practice.petclinicspringapplication.model.Visit;
 import org.springframework.data.repository.CrudRepository;
 
 public interface VisitRepo extends CrudRepository<Visit, Long> {

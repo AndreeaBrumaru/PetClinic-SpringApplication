@@ -1,6 +1,6 @@
-package com.guru.sftpetclinic.repositories;
+package com.practice.petclinicspringapplication.repository;
 
-import com.guru.sftpetclinic.model.Vet;
+import com.practice.petclinicspringapplication.model.Vet;
 import org.springframework.data.repository.CrudRepository;
 
 public interface VetRepo extends CrudRepository<Vet, Long> {
