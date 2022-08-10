@@ -13,7 +13,7 @@ public class Pet{
     private String namePet;
     private String petType;
     @ManyToOne
-    @JoinColumn(name = "idOwner", nullable = false)
+    @JoinColumn(name = "idOwner")
     private Owner owner;
     private LocalDate birthDate;
 
@@ -21,6 +21,11 @@ public class Pet{
     public Pet(String namePet, LocalDate birthDate, String petType) {
         this.namePet = namePet;
         this.birthDate = birthDate;
+        this.petType = petType;
+    }
+
+    public Pet(String namePet, String petType) {
+        this.namePet = namePet;
         this.petType = petType;
     }
 
