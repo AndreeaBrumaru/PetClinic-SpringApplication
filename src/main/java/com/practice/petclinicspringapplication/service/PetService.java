@@ -1,20 +1,23 @@
 package com.practice.petclinicspringapplication.service;
 
 import com.practice.petclinicspringapplication.model.Pet;
+import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PetService {
     private final PetRepo petRepo;
+    private final OwnerRepo ownerRepo;
 
     //Constructor
-    public PetService(PetRepo petRepo) {
+    public PetService(PetRepo petRepo, OwnerRepo ownerRepo) {
         this.petRepo = petRepo;
+        this.ownerRepo = ownerRepo;
     }
 
     //Methods
@@ -26,9 +29,10 @@ public class PetService {
     }
 
     //Find pet by id
-    public Optional<Pet> findById(Long idPet)
+    //TODO Make custom exception
+    public Pet findById(Long idPet) throws RuntimeException
     {
-        return petRepo.findById(idPet);
+        return petRepo.findById(idPet).orElseThrow(RuntimeException::new);
     }
 
     //Find all pets
@@ -47,7 +51,15 @@ public class PetService {
     }
 
     //update pet by id
-    //TODO Implement pet update method
+    public void update(Long id, String name, String type, LocalDate birthDate, Long owner_id) throws RuntimeException
+    {
+        Pet pet = findById(id);
+        pet.setNamePet(name);
+        pet.setPetType(type);
+        pet.setBirthDate(birthDate);
+        pet.setOwner(ownerRepo.findById(owner_id).orElseThrow(RuntimeException::new));
+        petRepo.save(pet);
+    }
 
     //delete vet by id
     public void deleteById(Long idPet)

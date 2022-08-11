@@ -35,32 +35,22 @@ public class MyRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
 //        logger.info(">> initializing test vets");
 //
-//        Vet v1 = new Vet("Diana", "A.");
+//        Vet v1 = new Vet("Miruna", "N.");
 //        vetRepo.save(v1);
 //
-//        Vet v2 = new Vet("Leo", "F.");
-//        vetRepo.save(v2);
-//
-//        Vet v3 = new Vet("Ioana", "C.");
-//        vetRepo.save(v3);
-
 //        logger.info(">> initializing test pets");
 //
-//        Pet p1 = new Pet("Polly", "Dog");
+//        Pet p1 = new Pet("Perry", "Platypus");
 //        petRepo.save(p1);
-//
-//        Pet p2 = new Pet("Chocola", LocalDate.of(2018, 03, 06), "Cat");
-//        petRepo.save(p2);
 //
 //        logger.info(">> initializing test owners");
 //
-//        Owner o1 = new Owner("Andreea", "B.");
+//        Owner o1 = new Owner("Leo", "C.");
 //        ownerRepo.save(o1);
-
-        logger.info(">> initializing visit owners");
-        //TODO Make visits work
 //
-//        Visit vis1 = new Visit("Just wanted attention",LocalDate.now(), o1, p2, v1);
+//        logger.info(">> initializing visit owners");
+//
+//        Visit vis1 = new Visit("Regular check-up.", LocalDate.now(), o1, p1, v1);
 //        visitRepo.save(vis1);
     }
 }

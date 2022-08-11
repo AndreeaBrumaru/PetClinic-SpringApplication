@@ -2,20 +2,17 @@ package com.practice.petclinicspringapplication.model;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
+@Table(name = "owners")
 public class Owner{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idOwner;
+    @Column(name = "ownerId")
+    private Long id;
     private String firstName;
     private String lastName;
-    @OneToMany(mappedBy = "owner")
-    private Set<Pet> pets;
-    @OneToMany(mappedBy = "owner")
-    private Set<Visit> visits;
 
     //Constructor
     public Owner(String firstName, String lastName) {
@@ -29,11 +26,11 @@ public class Owner{
 
     //Getters and setters
     public Long getIdOwner() {
-        return idOwner;
+        return id;
     }
 
     public void setIdOwner(Long idOwner) {
-        this.idOwner = idOwner;
+        this.id = idOwner;
     }
 
     public String getFirstName() {
@@ -52,22 +49,6 @@ public class Owner{
         this.lastName = lastName;
     }
 
-    public Set<Pet> getPets() {
-        return pets;
-    }
-
-    public void setPets(Set<Pet> pets) {
-        this.pets = pets;
-    }
-
-    public Set<Visit> getVisits() {
-        return visits;
-    }
-
-    public void setVisits(Set<Visit> visits) {
-        this.visits = visits;
-    }
-
     //Equals and hashcode
     @Override
     public boolean equals(Object o) {
@@ -76,14 +57,14 @@ public class Owner{
 
         Owner owner = (Owner) o;
 
-        if (!Objects.equals(idOwner, owner.idOwner)) return false;
+        if (!Objects.equals(id, owner.id)) return false;
         if (!Objects.equals(firstName, owner.firstName)) return false;
         return Objects.equals(lastName, owner.lastName);
     }
 
     @Override
     public int hashCode() {
-        int result = idOwner != null ? idOwner.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         return result;
@@ -93,7 +74,7 @@ public class Owner{
     @Override
     public String toString() {
         return "Owner{" +
-                "idOwner=" + idOwner +
+                "idOwner=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 '}';

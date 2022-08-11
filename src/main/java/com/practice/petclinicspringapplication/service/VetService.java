@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class VetService {
@@ -26,9 +25,9 @@ public class VetService {
     }
 
     //Find vet by id
-    public Optional<Vet> findById(Long idVet)
-    {
-        return vetRepo.findById(idVet);
+    //TODO Make custom exception
+    public Vet findById(Long idVet) throws RuntimeException {
+        return vetRepo.findById(idVet).orElseThrow(RuntimeException::new);
     }
 
     //Find all vets
@@ -47,10 +46,12 @@ public class VetService {
     }
 
     //update vet by id
-    //TODO Implement vet update method
     public void update(Long id, String firstName, String lastName)
     {
-        Optional<Vet> vet = vetRepo.findById(id);
+        Vet vet = findById(id);
+        vet.setFirstName(firstName);
+        vet.setLastName(lastName);
+        vetRepo.save(vet);
     }
     //delete vet by id
     public void deleteById(Long idVet)

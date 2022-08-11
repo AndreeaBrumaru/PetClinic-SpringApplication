@@ -5,32 +5,26 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
+@Table(name = "visits")
 public class Visit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idVisit;
+    @Column(name = "visitId")
+    private Long id;
     private String reasonForVisit;
     private LocalDate dateOfVisit;
-    @ManyToOne
-    @JoinColumn(name="idOwner", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "owner_id", referencedColumnName = "ownerId")
     private Owner owner;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pet_id", referencedColumnName = "petId")
     private Pet pet;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "vet_id", referencedColumnName = "vetId")
     private Vet vet;
 
     //Constructor
-    public Visit() {
-    }
-
-    public Visit(String reasonForVisit, Owner owner, Pet pet, Vet vet) {
-        this.reasonForVisit = reasonForVisit;
-        this.owner = owner;
-        this.pet = pet;
-        this.vet = vet;
-    }
-
     public Visit(String reasonForVisit, LocalDate dateOfVisit, Owner owner, Pet pet, Vet vet) {
         this.reasonForVisit = reasonForVisit;
         this.dateOfVisit = dateOfVisit;
@@ -39,13 +33,17 @@ public class Visit {
         this.vet = vet;
     }
 
+    public Visit() {
+
+    }
+
     //Getters and Setters
     public Long getIdVisit() {
-        return idVisit;
+        return id;
     }
 
     public void setIdVisit(Long idVisit) {
-        this.idVisit = idVisit;
+        this.id = idVisit;
     }
 
     public String getReasonForVisit() {
@@ -96,13 +94,13 @@ public class Visit {
 
         Visit visit = (Visit) o;
 
-        if (!Objects.equals(idVisit, visit.idVisit)) return false;
+        if (!Objects.equals(id, visit.id)) return false;
         return Objects.equals(dateOfVisit, visit.dateOfVisit);
     }
 
     @Override
     public int hashCode() {
-        int result = idVisit != null ? idVisit.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (dateOfVisit != null ? dateOfVisit.hashCode() : 0);
         return result;
     }
@@ -111,9 +109,12 @@ public class Visit {
     @Override
     public String toString() {
         return "Visit{" +
-                "idVisit=" + idVisit +
+                "idVisit=" + id +
                 ", reasonForVisit='" + reasonForVisit + '\'' +
                 ", dateOfVisit=" + dateOfVisit +
+                ", owner_id=" + owner.getIdOwner() +
+                ", pet_id=" + pet.getIdPet() +
+                ", vet_id=" + vet.getIdVet() +
                 '}';
     }
 }

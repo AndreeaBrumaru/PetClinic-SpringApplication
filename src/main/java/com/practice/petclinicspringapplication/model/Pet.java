@@ -5,23 +5,26 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
+@Table(name = "pets")
 public class Pet{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idPet;
+    @Column(name = "petId")
+    private Long id;
     private String namePet;
     private String petType;
     private LocalDate birthDate;
-    @ManyToOne
-    @JoinColumn(name = "idOwner")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "owner_id", referencedColumnName = "ownerId")
     private Owner owner;
 
     //Constructors
-    public Pet(String namePet, LocalDate birthDate, String petType) {
+    public Pet(String namePet, LocalDate birthDate, String petType, Owner owner) {
         this.namePet = namePet;
         this.birthDate = birthDate;
         this.petType = petType;
+        this.owner = owner;
     }
 
     public Pet(String namePet, String petType) {
@@ -35,11 +38,11 @@ public class Pet{
 
     //Getters and Setters
     public Long getIdPet() {
-        return idPet;
+        return id;
     }
 
     public void setIdPet(Long idPet) {
-        this.idPet = idPet;
+        this.id = idPet;
     }
 
     public String getNamePet() {
@@ -82,14 +85,14 @@ public class Pet{
 
         Pet pet = (Pet) o;
 
-        if (!Objects.equals(idPet, pet.idPet)) return false;
+        if (!Objects.equals(id, pet.id)) return false;
         if (!Objects.equals(namePet, pet.namePet)) return false;
         return Objects.equals(petType, pet.petType);
     }
 
     @Override
     public int hashCode() {
-        int result = idPet != null ? idPet.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (namePet != null ? namePet.hashCode() : 0);
         result = 31 * result + (petType != null ? petType.hashCode() : 0);
         return result;
@@ -99,9 +102,11 @@ public class Pet{
     @Override
     public String toString() {
         return "Pet{" +
-                "idPet=" + idPet +
-                ", namePet='" + namePet + '\'' +
-                ", petType=" + petType +
+                "idPet=" + id +
+                ", namePet= '" + namePet + '\'' +
+                ", petType= '" + petType + '\'' +
+                ", birthDate= " + birthDate +
+                ", owner_name= '" + owner.getFirstName() + " " + owner.getLastName() + '\'' +
                 '}';
     }
 }

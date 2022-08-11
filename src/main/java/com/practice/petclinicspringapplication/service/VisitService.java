@@ -1,22 +1,31 @@
 package com.practice.petclinicspringapplication.service;
 
 import com.practice.petclinicspringapplication.model.Visit;
+import com.practice.petclinicspringapplication.repository.OwnerRepo;
+import com.practice.petclinicspringapplication.repository.PetRepo;
+import com.practice.petclinicspringapplication.repository.VetRepo;
 import com.practice.petclinicspringapplication.repository.VisitRepo;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class VisitService
 {
     private final VisitRepo visitRepo;
+    private final OwnerRepo ownerRepo;
+    private final PetRepo petRepo;
+    private final VetRepo vetRepo;
 
 
     //Constructor
-    public VisitService(VisitRepo visitRepo) {
+    public VisitService(VisitRepo visitRepo, OwnerRepo ownerRepo, PetRepo petRepo, VetRepo vetRepo) {
         this.visitRepo = visitRepo;
+        this.ownerRepo = ownerRepo;
+        this.petRepo = petRepo;
+        this.vetRepo = vetRepo;
     }
 
     //Methods
@@ -28,9 +37,9 @@ public class VisitService
     }
 
     //Find visit by id
-    public Optional<Visit> findById(Long idVisit)
+    public Visit findById(Long idVisit) throws RuntimeException
     {
-        return visitRepo.findById(idVisit);
+        return visitRepo.findById(idVisit).orElseThrow(RuntimeException::new);
     }
 
     //Find all visits
@@ -49,7 +58,16 @@ public class VisitService
     }
 
     //update visit by id
-    //TODO Implement visit update method
+    public void update(Long id, String reason, LocalDate date, Long owner_id, Long pet_id, Long vet_id) throws RuntimeException
+    {
+        Visit visit = findById(id);
+        visit.setReasonForVisit(reason);
+        visit.setDateOfVisit(date);
+        visit.setOwner(ownerRepo.findById(owner_id).orElseThrow(RuntimeException::new));
+        visit.setPet(petRepo.findById(pet_id).orElseThrow(RuntimeException::new));
+        visit.setVet(vetRepo.findById(vet_id).orElseThrow(RuntimeException::new));
+        visitRepo.save(visit);
+    }
 
     //delete visit by id
     public void deleteById(Long idVisit)

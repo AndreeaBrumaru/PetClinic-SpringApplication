@@ -17,26 +17,23 @@ public class OwnerController {
 
     //Methods
     //Add owner
-    @PostMapping("owners/add")
-    public void add(@RequestParam String firstName, @RequestParam String lastName)
+    //TODO Make it so that it also accepts id and if it exists throw custom exception
+    @PostMapping("/owners")
+    public void add(@RequestParam Optional<String> id, @RequestParam String firstName, @RequestParam String lastName)
     {
-        Owner newOwner = new Owner(firstName, lastName);
-        ownerService.add(newOwner);
+        if(id.isEmpty())
+        {
+            Owner newOwner = new Owner(firstName, lastName);
+            ownerService.add(newOwner);
+        }
+        else {
+            System.out.println("You are trying to update an owner. Please use the put method.");
+        }
     }
 
-    //Add pet to owner
-    //TODO Implement add pet to owner
-//    @PostMapping("/owners/addPet")
-//    public void addPet(@RequestParam String ownerId, @RequestParam String petId)
-//    {
-//        Long oId = Long.parseLong(ownerId);
-//        Long pId = Long.parseLong(petId);
-//        ownerService.addPet(oId, pId);
-//    }
-
     //Find owner by id
-    @GetMapping("owners/{id}")
-    public Optional<Owner> findOwner(@PathVariable String id)
+    @GetMapping("/owners/{id}")
+    public Owner findOwner(@PathVariable String id)
     {
         Long ownerId = Long.parseLong(id);
         return ownerService.findById(ownerId);
@@ -56,13 +53,17 @@ public class OwnerController {
     }
 
     //Update an owner
-    //TODO implement update vet method
+    //TODO make it throw exception if owner doesn't exist
+    @PutMapping("/owners")
+    public void update(@RequestParam String id, @RequestParam String firstName, @RequestParam String lastName)
+    {
+        ownerService.update(Long.parseLong(id), firstName, lastName);
+    }
 
     //delete owner by id
-    @DeleteMapping("owners/delete/{id}")
+    @DeleteMapping("/owners/{id}")
     public void delete(@PathVariable String id)
     {
-        Long ownerId = Long.parseLong(id);
-        ownerService.deleteById(ownerId);
+        ownerService.deleteById(Long.parseLong(id));
     }
 }

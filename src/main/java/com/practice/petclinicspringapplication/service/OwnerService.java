@@ -2,22 +2,18 @@ package com.practice.petclinicspringapplication.service;
 
 import com.practice.petclinicspringapplication.model.Owner;
 import com.practice.petclinicspringapplication.repository.OwnerRepo;
-import com.practice.petclinicspringapplication.repository.PetRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OwnerService {
     private final OwnerRepo ownerRepo;
-    private final PetRepo petRepo;
 
     //Constructor
-    public OwnerService(OwnerRepo ownerRepo, PetRepo petRepo) {
+    public OwnerService(OwnerRepo ownerRepo) {
         this.ownerRepo = ownerRepo;
-        this.petRepo = petRepo;
     }
 
     //Methods
@@ -28,22 +24,11 @@ public class OwnerService {
         System.out.println("Added new owner: " + newOwner);
     }
 
-    //Add pet to owner
-    //TODO Implement adding pet to owner
-//    public void addPet(Long ownerId, Long petId)
-//    {
-//        Optional<Owner> owner = ownerRepo.findById(ownerId);
-//        Optional<Pet> pet = petRepo.findById(petId);
-//        (Owner) owner.getPets().add(pet);
-//        (Pet) pet.setOwner(owner);
-//        ownerRepo.save(owner);
-//        petRepo.save(pet);
-//    }
-
     //Find owner by id
-    public Optional<Owner> findById(Long idOwner)
+    //TODO Make custom exception
+    public Owner findById(Long idOwner) throws RuntimeException
     {
-        return ownerRepo.findById(idOwner);
+        return ownerRepo.findById(idOwner).orElseThrow(RuntimeException::new);
     }
 
     //Find all owners
@@ -62,7 +47,13 @@ public class OwnerService {
     }
 
     //update owner by id
-    //TODO Implement owner update method
+    public void update(Long id, String firstName, String lastName)
+    {
+        Owner owner = findById(id);
+        owner.setFirstName(firstName);
+        owner.setLastName(lastName);
+        ownerRepo.save(owner);
+    }
 
     //delete owner by id
     public void deleteById(Long idOwner)
