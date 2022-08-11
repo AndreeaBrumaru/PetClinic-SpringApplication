@@ -1,34 +1,33 @@
 package com.practice.petclinicspringapplication.controller;
 
+import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
 import com.practice.petclinicspringapplication.model.Owner;
-import com.practice.petclinicspringapplication.service.OwnerService;
+import com.practice.petclinicspringapplication.service.IOwnerService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
 public class OwnerController {
-    private final OwnerService ownerService;
+    private final IOwnerService ownerService;
 
     //Constructor
-    public OwnerController(OwnerService ownerService) {
+    public OwnerController(IOwnerService ownerService) {
         this.ownerService = ownerService;
     }
 
     //Methods
     //Add owner
-    //TODO Make it so that it also accepts id and if it exists throw custom exception
     @PostMapping("/owners")
-    public void add(@RequestParam Optional<String> id, @RequestParam String firstName, @RequestParam String lastName)
+    public void add(@RequestParam String firstName, @RequestParam String lastName, @RequestParam Optional<String> id)
     {
-        if(id.isEmpty())
+        if(id.isPresent())
         {
-            Owner newOwner = new Owner(firstName, lastName);
-            ownerService.add(newOwner);
+            //Throws exception if id has been inserted
+            throw new UpdateObjectInPostException();
         }
-        else {
-            System.out.println("You are trying to update an owner. Please use the put method.");
-        }
+        Owner newOwner = new Owner(firstName, lastName);
+        ownerService.add(newOwner);
     }
 
     //Find owner by id
@@ -53,7 +52,6 @@ public class OwnerController {
     }
 
     //Update an owner
-    //TODO make it throw exception if owner doesn't exist
     @PutMapping("/owners")
     public void update(@RequestParam String id, @RequestParam String firstName, @RequestParam String lastName)
     {

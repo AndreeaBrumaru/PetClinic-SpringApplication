@@ -29,20 +29,25 @@ public class Owner{
         return id;
     }
 
-    public void setIdOwner(Long idOwner) {
-        this.id = idOwner;
-    }
-
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
+    }
+
+    public String getFullName()
+    {
+        return firstName + " " + lastName;
+    }
+
+    public void setIdOwner(Long idOwner) {
+        this.id = idOwner;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public void setLastName(String lastName) {

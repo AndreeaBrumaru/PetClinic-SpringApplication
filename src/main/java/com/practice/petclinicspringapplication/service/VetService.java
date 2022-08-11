@@ -1,5 +1,7 @@
 package com.practice.petclinicspringapplication.service;
 
+import com.practice.petclinicspringapplication.exception.NoDataFoundException;
+import com.practice.petclinicspringapplication.exception.VetNotFoundException;
 import com.practice.petclinicspringapplication.model.Vet;
 import com.practice.petclinicspringapplication.repository.VetRepo;
 import org.springframework.stereotype.Service;
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class VetService {
+public class VetService implements IVetService{
     private final VetRepo vetRepo;
 
     //Constructor
@@ -18,6 +20,7 @@ public class VetService {
 
     //Methods
     //Add new vet
+    @Override
     public void add(Vet newVet)
     {
         vetRepo.save(newVet);
@@ -25,27 +28,34 @@ public class VetService {
     }
 
     //Find vet by id
-    //TODO Make custom exception
-    public Vet findById(Long idVet) throws RuntimeException {
-        return vetRepo.findById(idVet).orElseThrow(RuntimeException::new);
+    @Override
+    public Vet findById(Long idVet){
+        return vetRepo.findById(idVet).orElseThrow(()-> new VetNotFoundException(idVet));
     }
 
     //Find all vets
+    @Override
     public List<Vet> findAll()
     {
         var it = vetRepo.findAll();
         List<Vet> vets = new ArrayList<>();
         it.forEach(vets::add);
+        if(vets.isEmpty())
+        {
+            throw new NoDataFoundException();
+        }
         return vets;
     }
 
     //Count all vets
+    @Override
     public Long count()
     {
         return vetRepo.count();
     }
 
     //update vet by id
+    @Override
     public void update(Long id, String firstName, String lastName)
     {
         Vet vet = findById(id);
@@ -54,6 +64,7 @@ public class VetService {
         vetRepo.save(vet);
     }
     //delete vet by id
+    @Override
     public void deleteById(Long idVet)
     {
         System.out.println("Deleting: " + vetRepo.findById(idVet));

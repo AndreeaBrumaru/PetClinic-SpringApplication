@@ -41,36 +41,36 @@ public class Pet{
         return id;
     }
 
-    public void setIdPet(Long idPet) {
-        this.id = idPet;
-    }
-
     public String getNamePet() {
         return namePet;
-    }
-
-    public void setNamePet(String namePet) {
-        this.namePet = namePet;
     }
 
     public String getPetType() {
         return petType;
     }
 
-    public void setPetType(String petType) {
-        this.petType = petType;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
     public Owner getOwner() {
         return owner;
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
+    public void setIdPet(Long idPet) {
+        this.id = idPet;
     }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
+    public void setNamePet(String namePet) {
+        this.namePet = namePet;
+    }
+
+    public void setPetType(String petType) {
+        this.petType = petType;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
     public void setBirthDate(LocalDate birthDate) {
@@ -106,7 +106,7 @@ public class Pet{
                 ", namePet= '" + namePet + '\'' +
                 ", petType= '" + petType + '\'' +
                 ", birthDate= " + birthDate +
-                ", owner_name= '" + owner.getFirstName() + " " + owner.getLastName() + '\'' +
+                ", owner_name= '" + owner.getFullName() + '\'' +
                 '}';
     }
 }

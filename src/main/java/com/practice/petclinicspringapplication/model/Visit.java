@@ -42,44 +42,44 @@ public class Visit {
         return id;
     }
 
-    public void setIdVisit(Long idVisit) {
-        this.id = idVisit;
-    }
-
     public String getReasonForVisit() {
         return reasonForVisit;
-    }
-
-    public void setReasonForVisit(String reasonForVisit) {
-        this.reasonForVisit = reasonForVisit;
     }
 
     public LocalDate getDateOfVisit() {
         return dateOfVisit;
     }
 
-    public void setDateOfVisit(LocalDate dateOfVisit) {
-        this.dateOfVisit = dateOfVisit;
-    }
-
     public Owner getOwner() {
         return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 
     public Pet getPet() {
         return pet;
     }
 
-    public void setPet(Pet pet) {
-        this.pet = pet;
-    }
-
     public Vet getVet() {
         return vet;
+    }
+
+    public void setIdVisit(Long idVisit) {
+        this.id = idVisit;
+    }
+
+    public void setReasonForVisit(String reasonForVisit) {
+        this.reasonForVisit = reasonForVisit;
+    }
+
+    public void setDateOfVisit(LocalDate dateOfVisit) {
+        this.dateOfVisit = dateOfVisit;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
     }
 
     public void setVet(Vet vet) {
@@ -112,9 +112,9 @@ public class Visit {
                 "idVisit=" + id +
                 ", reasonForVisit='" + reasonForVisit + '\'' +
                 ", dateOfVisit=" + dateOfVisit +
-                ", owner_id=" + owner.getIdOwner() +
-                ", pet_id=" + pet.getIdPet() +
-                ", vet_id=" + vet.getIdVet() +
+                ", owner=" + owner.getFullName() +
+                ", pet=" + pet.getNamePet() +
+                ", vet=" + vet.getFullName() +
                 '}';
     }
 }

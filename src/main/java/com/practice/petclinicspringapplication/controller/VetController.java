@@ -1,25 +1,31 @@
 package com.practice.petclinicspringapplication.controller;
 
+import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
 import com.practice.petclinicspringapplication.model.Vet;
-import com.practice.petclinicspringapplication.service.VetService;
+import com.practice.petclinicspringapplication.service.IVetService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 public class VetController {
 
-    private final VetService vetService;
+    private final IVetService vetService;
 
     //Constructor
-    public VetController(VetService vetService) {
+    public VetController(IVetService vetService) {
         this.vetService = vetService;
     }
 
     //Methods
     //Add vet
-    //TODO Make it so that if an id is introduces, throws custom error
     @PostMapping("/vets")
-    public void add(@RequestParam String firstName, @RequestParam String lastName)
+    public void add(@RequestParam String firstName, @RequestParam String lastName, @RequestParam Optional<String> id)
     {
+        if(id.isPresent())
+        {
+            throw new UpdateObjectInPostException();
+        }
         Vet newVet = new Vet(firstName, lastName);
         vetService.add(newVet);
     }
@@ -46,7 +52,6 @@ public class VetController {
     }
 
     //Update a vet
-    //TODO make it throw exception if owner doesn't exist
     @PutMapping("/vets")
     public void update(@RequestParam String vetId, @RequestParam String firstName,@RequestParam String lastName)
     {

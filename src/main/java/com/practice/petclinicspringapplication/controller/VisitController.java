@@ -1,25 +1,30 @@
 package com.practice.petclinicspringapplication.controller;
 
+import com.practice.petclinicspringapplication.exception.OwnerNotFoundException;
+import com.practice.petclinicspringapplication.exception.PetNotFoundException;
+import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
+import com.practice.petclinicspringapplication.exception.VetNotFoundException;
 import com.practice.petclinicspringapplication.model.Visit;
 import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import com.practice.petclinicspringapplication.repository.VetRepo;
-import com.practice.petclinicspringapplication.service.VisitService;
+import com.practice.petclinicspringapplication.service.IVisitService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @RestController
 public class VisitController {
 
-    private final VisitService visitService;
+    private final IVisitService visitService;
     private final OwnerRepo ownerRepo;
     private final PetRepo petRepo;
     private final VetRepo vetRepo;
 
     //Constructor
-    public VisitController(VisitService visitService, OwnerRepo ownerRepo, PetRepo petRepo, VetRepo vetRepo) {
+    public VisitController(IVisitService visitService, OwnerRepo ownerRepo, PetRepo petRepo, VetRepo vetRepo) {
         this.visitService = visitService;
         this.ownerRepo = ownerRepo;
         this.petRepo = petRepo;
@@ -28,19 +33,21 @@ public class VisitController {
 
     //Methods
     //Add visit
-    //TODO throw exception if exists
     @PostMapping("/visits")
-    public void add(@RequestParam String reasonForVisit, @RequestParam String ownerId, @RequestParam String petId, @RequestParam String vetId) throws RuntimeException
+    public void add(@RequestParam String reasonForVisit, @RequestParam String ownerId, @RequestParam String petId, @RequestParam String vetId, @RequestParam Optional<String> id)
     {
+        if(id.isPresent())
+        {
+            throw new UpdateObjectInPostException();
+        }
         Visit visit = new Visit(reasonForVisit, LocalDate.now(),
-                ownerRepo.findById(Long.parseLong(ownerId)).orElseThrow(RuntimeException::new),
-                petRepo.findById(Long.parseLong(petId)).orElseThrow(RuntimeException::new),
-                vetRepo.findById(Long.parseLong(vetId)).orElseThrow(RuntimeException::new));
+                ownerRepo.findById(Long.parseLong(ownerId)).orElseThrow(() -> new OwnerNotFoundException(Long.parseLong(ownerId))),
+                petRepo.findById(Long.parseLong(petId)).orElseThrow(() -> new PetNotFoundException(Long.parseLong(petId))),
+                vetRepo.findById(Long.parseLong(vetId)).orElseThrow(() -> new VetNotFoundException(Long.parseLong(vetId))));
         visitService.add(visit);
     }
 
     //Find visit by id
-    //TODO Throw custom exception if owner exists(make it also accept id)
     @GetMapping("/visits/{id}")
     public Visit findVisit(@PathVariable String id)
     {
@@ -61,7 +68,7 @@ public class VisitController {
     }
 
     //Update a visit
-    //TODO Make it throw exception if doesn't exist(make stuff nullable)
+    //TODO Make stuff optional
     @PutMapping("/visits")
     public void update(@RequestParam String id, @RequestParam String reason, @RequestParam String date, @RequestParam String ownerId, @RequestParam String petId, @RequestParam String vetId)
     {
