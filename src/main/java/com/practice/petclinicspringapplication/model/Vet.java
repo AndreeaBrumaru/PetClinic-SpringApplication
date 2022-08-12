@@ -37,11 +37,6 @@ public class Vet {
         return lastName;
     }
 
-    public String getFullName()
-    {
-        return firstName + " " + lastName;
-    }
-
     public void setIdVet(Long idVet) {
         this.id = idVet;
     }

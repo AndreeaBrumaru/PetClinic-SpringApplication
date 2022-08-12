@@ -14,6 +14,7 @@ public class Visit {
     private Long id;
     private String reasonForVisit;
     private LocalDate dateOfVisit;
+    //TODO REfactor so that we don't need owner anymore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id", referencedColumnName = "ownerId")
     private Owner owner;
@@ -112,9 +113,6 @@ public class Visit {
                 "idVisit=" + id +
                 ", reasonForVisit='" + reasonForVisit + '\'' +
                 ", dateOfVisit=" + dateOfVisit +
-                ", owner=" + owner.getFullName() +
-                ", pet=" + pet.getNamePet() +
-                ", vet=" + vet.getFullName() +
                 '}';
     }
 }

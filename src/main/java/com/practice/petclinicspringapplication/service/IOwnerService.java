@@ -9,6 +9,6 @@ public interface IOwnerService {
     Owner findById(Long idOwner);
     List<Owner> findAll();
     Long count();
-    void update(Long id, String firstName, String lastName);
+    void update(Long id, Owner owner);
     void deleteById(Long idOwner);
 }

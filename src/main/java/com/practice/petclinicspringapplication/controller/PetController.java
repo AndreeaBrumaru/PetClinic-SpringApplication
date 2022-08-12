@@ -7,8 +7,6 @@ import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.service.IPetService;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RestController
@@ -25,26 +23,22 @@ public class PetController
 
     //Methods
     //Add pet
-    //TODO make birthday be optional
     @PostMapping("/pets")
-    public void add(@RequestParam String name, @RequestParam String type, @RequestParam String birthDate, @RequestParam String owner_id, @RequestParam Optional<String> id)
+    public void add(@RequestParam Optional<Long> id, @RequestParam(required = false) Long ownerId, @RequestBody Pet pet)
     {
        if(id.isPresent())
        {
            throw new UpdateObjectInPostException();
        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        LocalDate birth = LocalDate.parse(birthDate, formatter);
-
-        Pet newPet = new Pet(name, birth, type, ownerRepo.findById(Long.parseLong(owner_id)).orElseThrow(() -> new OwnerNotFoundException(Long.parseLong(owner_id))));
-        petService.add(newPet);
+       pet.setOwner(ownerRepo.findById(ownerId).orElseThrow(()-> new OwnerNotFoundException(ownerId)));
+        petService.add(pet);
     }
 
     //Find pet by id
     @GetMapping("/pets/{id}")
-    public Pet findVet(@PathVariable String id)
+    public Pet findVet(@PathVariable Long id)
     {
-        return petService.findById(Long.parseLong(id));
+        return petService.findById(id);
     }
 
     //See all pets
@@ -61,19 +55,16 @@ public class PetController
     }
 
     //Update a pet
-    @PutMapping("/pets")
-    public void update(@RequestParam String petId, @RequestParam String name,@RequestParam String type, @RequestParam String birthDate, @RequestParam String owner_id)
+    @PutMapping("/pets/{id}")
+    public void update(@PathVariable Long id, @RequestParam(required = false) Long ownerId, @RequestBody Pet pet)
     {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        LocalDate birth = LocalDate.parse(birthDate, formatter);
-        petService.update(Long.parseLong(petId), name, type, birth, Long.parseLong(owner_id));
+        petService.update(id, pet, ownerId);
     }
 
     //delete pet by id
     @DeleteMapping("/pets/{id}")
-    public void delete(@PathVariable String id)
+    public void delete(@PathVariable Long id)
     {
-        Long petId = Long.parseLong(id);
-        petService.deleteById(petId);
+        petService.deleteById(id);
     }
 }

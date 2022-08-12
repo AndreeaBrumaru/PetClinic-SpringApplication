@@ -1,14 +1,15 @@
 package com.practice.petclinicspringapplication.service;
 
-import com.practice.petclinicspringapplication.exception.*;
+import com.practice.petclinicspringapplication.exception.NoDataFoundException;
+import com.practice.petclinicspringapplication.exception.PetNotFoundException;
+import com.practice.petclinicspringapplication.exception.VetNotFoundException;
+import com.practice.petclinicspringapplication.exception.VisitNotFoundException;
 import com.practice.petclinicspringapplication.model.Visit;
-import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import com.practice.petclinicspringapplication.repository.VetRepo;
 import com.practice.petclinicspringapplication.repository.VisitRepo;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,15 +17,13 @@ import java.util.List;
 public class VisitService implements IVisitService
 {
     private final VisitRepo visitRepo;
-    private final OwnerRepo ownerRepo;
     private final PetRepo petRepo;
     private final VetRepo vetRepo;
 
 
     //Constructor
-    public VisitService(VisitRepo visitRepo, OwnerRepo ownerRepo, PetRepo petRepo, VetRepo vetRepo) {
+    public VisitService(VisitRepo visitRepo, PetRepo petRepo, VetRepo vetRepo) {
         this.visitRepo = visitRepo;
-        this.ownerRepo = ownerRepo;
         this.petRepo = petRepo;
         this.vetRepo = vetRepo;
     }
@@ -68,15 +67,14 @@ public class VisitService implements IVisitService
 
     //update visit by id
     @Override
-    public void update(Long id, String reason, LocalDate date, Long owner_id, Long pet_id, Long vet_id)
+    public void update(Long id, Visit visit, Long petId, Long vetId)
     {
-        Visit visit = findById(id);
-        visit.setReasonForVisit(reason);
-        visit.setDateOfVisit(date);
-        visit.setOwner(ownerRepo.findById(owner_id).orElseThrow(() -> new OwnerNotFoundException(owner_id)));
-        visit.setPet(petRepo.findById(pet_id).orElseThrow(() -> new PetNotFoundException(pet_id)));
-        visit.setVet(vetRepo.findById(vet_id).orElseThrow(() ->  new VetNotFoundException(vet_id)));
-        visitRepo.save(visit);
+        Visit oldVisit = findById(id);
+        oldVisit.setReasonForVisit(visit.getReasonForVisit());
+        oldVisit.setDateOfVisit(visit.getDateOfVisit());
+        oldVisit.setPet(petRepo.findById(petId).orElseThrow(() -> new PetNotFoundException(petId)));
+        oldVisit.setVet(vetRepo.findById(vetId).orElseThrow(() -> new VetNotFoundException(vetId)));
+        visitRepo.save(oldVisit);
     }
 
     //delete visit by id
@@ -84,6 +82,7 @@ public class VisitService implements IVisitService
     public void deleteById(Long idVisit)
     {
         System.out.println("Deleting: " + visitRepo.findById(idVisit));
+        //TODO Deleting visit deletes pet and vet associated with it
         visitRepo.deleteById(idVisit);
     }
 

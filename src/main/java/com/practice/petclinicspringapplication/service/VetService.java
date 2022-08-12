@@ -56,12 +56,12 @@ public class VetService implements IVetService{
 
     //update vet by id
     @Override
-    public void update(Long id, String firstName, String lastName)
+    public void update(Long id, Vet vet)
     {
-        Vet vet = findById(id);
-        vet.setFirstName(firstName);
-        vet.setLastName(lastName);
-        vetRepo.save(vet);
+        Vet oldVet = findById(id);
+        oldVet.setFirstName(vet.getFirstName());
+        oldVet.setLastName(vet.getLastName());
+        vetRepo.save(oldVet);
     }
     //delete vet by id
     @Override

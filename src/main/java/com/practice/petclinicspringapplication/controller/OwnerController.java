@@ -19,23 +19,21 @@ public class OwnerController {
     //Methods
     //Add owner
     @PostMapping("/owners")
-    public void add(@RequestParam String firstName, @RequestParam String lastName, @RequestParam Optional<String> id)
+    public void add(@RequestParam Optional<Long> id, @RequestBody Owner owner)
     {
         if(id.isPresent())
         {
             //Throws exception if id has been inserted
             throw new UpdateObjectInPostException();
         }
-        Owner newOwner = new Owner(firstName, lastName);
-        ownerService.add(newOwner);
+        ownerService.add(owner);
     }
 
     //Find owner by id
     @GetMapping("/owners/{id}")
-    public Owner findOwner(@PathVariable String id)
+    public Owner findOwner(@PathVariable Long id)
     {
-        Long ownerId = Long.parseLong(id);
-        return ownerService.findById(ownerId);
+        return ownerService.findById(id);
     }
 
     //See all owners
@@ -52,16 +50,16 @@ public class OwnerController {
     }
 
     //Update an owner
-    @PutMapping("/owners")
-    public void update(@RequestParam String id, @RequestParam String firstName, @RequestParam String lastName)
+    @PutMapping("/owners/{id}")
+    public void update(@PathVariable Long id, @RequestBody Owner owner)
     {
-        ownerService.update(Long.parseLong(id), firstName, lastName);
+        ownerService.update(id, owner);
     }
 
     //delete owner by id
     @DeleteMapping("/owners/{id}")
-    public void delete(@PathVariable String id)
+    public void delete(@PathVariable Long id)
     {
-        ownerService.deleteById(Long.parseLong(id));
+        ownerService.deleteById(id);
     }
 }

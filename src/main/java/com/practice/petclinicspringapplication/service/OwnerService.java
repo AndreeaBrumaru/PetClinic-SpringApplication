@@ -57,12 +57,12 @@ public class OwnerService implements IOwnerService{
 
     //update owner by id
     @Override
-    public void update(Long id, String firstName, String lastName)
+    public void update(Long id, Owner owner)
     {
-        Owner owner = findById(id);
-        owner.setFirstName(firstName);
-        owner.setLastName(lastName);
-        ownerRepo.save(owner);
+        Owner oldOwner = findById(id);
+        oldOwner.setFirstName(owner.getFirstName());
+        oldOwner.setLastName(owner.getLastName());
+        ownerRepo.save(oldOwner);
     }
 
     //delete owner by id

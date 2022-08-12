@@ -37,11 +37,6 @@ public class Owner{
         return lastName;
     }
 
-    public String getFullName()
-    {
-        return firstName + " " + lastName;
-    }
-
     public void setIdOwner(Long idOwner) {
         this.id = idOwner;
     }

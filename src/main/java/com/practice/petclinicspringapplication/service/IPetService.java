@@ -2,7 +2,6 @@ package com.practice.petclinicspringapplication.service;
 
 import com.practice.petclinicspringapplication.model.Pet;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface IPetService {
@@ -10,6 +9,7 @@ public interface IPetService {
     Pet findById(Long idPet);
     List<Pet> findAll();
     Long count();
-    void update(Long id, String name, String type, LocalDate birthDate, Long owner_id);
+    void update(Long id, Pet pet, Long ownerId);
+
     void deleteById(Long idPet);
 }

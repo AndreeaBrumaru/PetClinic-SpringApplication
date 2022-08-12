@@ -9,6 +9,6 @@ public interface IVetService {
     Vet findById(Long idVet);
     List<Vet> findAll();
     Long count();
-    void update(Long id, String firstName, String lastName);
+    void update(Long id, Vet vet);
     void deleteById(Long idVet);
 }

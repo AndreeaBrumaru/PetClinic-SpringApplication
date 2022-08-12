@@ -106,7 +106,6 @@ public class Pet{
                 ", namePet= '" + namePet + '\'' +
                 ", petType= '" + petType + '\'' +
                 ", birthDate= " + birthDate +
-                ", owner_name= '" + owner.getFullName() + '\'' +
                 '}';
     }
 }

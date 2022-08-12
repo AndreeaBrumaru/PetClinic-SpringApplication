@@ -1,9 +1,9 @@
 package com.practice.petclinicspringapplication.repository;
 
 import com.practice.petclinicspringapplication.model.Visit;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VisitRepo extends CrudRepository<Visit, Long> {
+public interface VisitRepo extends JpaRepository<Visit, Long> {
 }

@@ -1,6 +1,5 @@
 package com.practice.petclinicspringapplication.controller;
 
-import com.practice.petclinicspringapplication.exception.OwnerNotFoundException;
 import com.practice.petclinicspringapplication.exception.PetNotFoundException;
 import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
 import com.practice.petclinicspringapplication.exception.VetNotFoundException;
@@ -12,7 +11,6 @@ import com.practice.petclinicspringapplication.service.IVisitService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RestController
@@ -34,24 +32,23 @@ public class VisitController {
     //Methods
     //Add visit
     @PostMapping("/visits")
-    public void add(@RequestParam String reasonForVisit, @RequestParam String ownerId, @RequestParam String petId, @RequestParam String vetId, @RequestParam Optional<String> id)
+    public void add(@RequestParam Optional<Long> id, @RequestParam Long petId, @RequestParam Long vetId, @RequestBody Visit visit)
     {
         if(id.isPresent())
         {
             throw new UpdateObjectInPostException();
         }
-        Visit visit = new Visit(reasonForVisit, LocalDate.now(),
-                ownerRepo.findById(Long.parseLong(ownerId)).orElseThrow(() -> new OwnerNotFoundException(Long.parseLong(ownerId))),
-                petRepo.findById(Long.parseLong(petId)).orElseThrow(() -> new PetNotFoundException(Long.parseLong(petId))),
-                vetRepo.findById(Long.parseLong(vetId)).orElseThrow(() -> new VetNotFoundException(Long.parseLong(vetId))));
+        visit.setDateOfVisit(LocalDate.now());
+        visit.setPet(petRepo.findById(petId).orElseThrow(() -> new PetNotFoundException(petId)));
+        visit.setVet(vetRepo.findById(vetId).orElseThrow(() -> new VetNotFoundException(vetId)));
         visitService.add(visit);
     }
 
     //Find visit by id
     @GetMapping("/visits/{id}")
-    public Visit findVisit(@PathVariable String id)
+    public Visit findVisit(@PathVariable Long id)
     {
-        return visitService.findById(Long.parseLong(id));
+        return visitService.findById(id);
     }
 
     //See all visits
@@ -69,18 +66,16 @@ public class VisitController {
 
     //Update a visit
     //TODO Make stuff optional
-    @PutMapping("/visits")
-    public void update(@RequestParam String id, @RequestParam String reason, @RequestParam String date, @RequestParam String ownerId, @RequestParam String petId, @RequestParam String vetId)
+    @PutMapping("/visits/{id}")
+    public void update(@PathVariable Long id, @RequestParam Long petId, @RequestParam Long vetId, @RequestBody Visit visit)
     {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        LocalDate newDate = LocalDate.parse(date, formatter);
-        visitService.update(Long.parseLong(id), reason, newDate, Long.parseLong(ownerId), Long.parseLong(petId), Long.parseLong(vetId));
+        visitService.update(id, visit, petId, vetId);
     }
 
     //delete visit by id
     @DeleteMapping("/visits/{id}")
-    public void delete(@PathVariable String id)
+    public void delete(@PathVariable Long id)
     {
-        visitService.deleteById(Long.parseLong(id));
+        visitService.deleteById(id);
     }
 }

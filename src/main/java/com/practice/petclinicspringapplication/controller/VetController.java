@@ -1,11 +1,8 @@
 package com.practice.petclinicspringapplication.controller;
 
-import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
 import com.practice.petclinicspringapplication.model.Vet;
 import com.practice.petclinicspringapplication.service.IVetService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 public class VetController {
@@ -19,23 +16,17 @@ public class VetController {
 
     //Methods
     //Add vet
-    @PostMapping("/vets")
-    public void add(@RequestParam String firstName, @RequestParam String lastName, @RequestParam Optional<String> id)
+    @PostMapping(value="/vets")
+    public void addVet(@RequestBody Vet vet)
     {
-        if(id.isPresent())
-        {
-            throw new UpdateObjectInPostException();
-        }
-        Vet newVet = new Vet(firstName, lastName);
-        vetService.add(newVet);
+        vetService.add(vet);
     }
 
     //Find vet by id
     @GetMapping("/vets/{id}")
-    public Vet findVet(@PathVariable String id)
+    public Vet findVet(@PathVariable Long id)
     {
-        Long vetId = Long.parseLong(id);
-        return vetService.findById(vetId);
+        return vetService.findById(id);
     }
 
     //See all vets
@@ -52,16 +43,16 @@ public class VetController {
     }
 
     //Update a vet
-    @PutMapping("/vets")
-    public void update(@RequestParam String vetId, @RequestParam String firstName,@RequestParam String lastName)
+    @PutMapping("/vets/{id}")
+    public void update(@PathVariable Long id, @RequestBody Vet vet)
     {
-        vetService.update(Long.parseLong(vetId), firstName, lastName);
+        vetService.update(id, vet);
     }
 
     //delete vet by id
     @DeleteMapping("vets/{id}")
-    public void delete(@PathVariable String id)
+    public void delete(@PathVariable Long id)
     {
-        vetService.deleteById(Long.parseLong(id));
+        vetService.deleteById(id);
     }
 }
