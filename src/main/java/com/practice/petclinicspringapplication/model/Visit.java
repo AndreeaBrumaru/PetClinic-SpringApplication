@@ -14,10 +14,6 @@ public class Visit {
     private Long id;
     private String reasonForVisit;
     private LocalDate dateOfVisit;
-    //TODO Refactor so that we don't need owner anymore
-    @OneToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "ownerId")
-    private Owner owner;
     @OneToOne
     @JoinColumn(name = "pet_id", referencedColumnName = "petId")
     private Pet pet;
@@ -26,10 +22,9 @@ public class Visit {
     private Vet vet;
 
     //Constructor
-    public Visit(String reasonForVisit, LocalDate dateOfVisit, Owner owner, Pet pet, Vet vet) {
+    public Visit(String reasonForVisit, LocalDate dateOfVisit, Pet pet, Vet vet) {
         this.reasonForVisit = reasonForVisit;
         this.dateOfVisit = dateOfVisit;
-        this.owner = owner;
         this.pet = pet;
         this.vet = vet;
     }
@@ -51,9 +46,6 @@ public class Visit {
         return dateOfVisit;
     }
 
-    public Owner getOwner() {
-        return owner;
-    }
 
     public Pet getPet() {
         return pet;
@@ -73,10 +65,6 @@ public class Visit {
 
     public void setDateOfVisit(LocalDate dateOfVisit) {
         this.dateOfVisit = dateOfVisit;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 
     public void setPet(Pet pet) {

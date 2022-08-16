@@ -11,7 +11,7 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+//TODO Importing lists is wierd
 @RestController
 public class OwnerController {
     private final IOwnerService ownerService;
