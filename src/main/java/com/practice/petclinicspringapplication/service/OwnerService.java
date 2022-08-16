@@ -6,7 +6,6 @@ import com.practice.petclinicspringapplication.model.Owner;
 import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,13 +23,11 @@ public class OwnerService implements IOwnerService{
     public void add(Owner newOwner)
     {
         ownerRepo.save(newOwner);
-        System.out.println("Added new owner: " + newOwner);
     }
 
     //Find owner by id
     @Override
-    public Owner findById(Long idOwner)
-    {
+    public Owner findById(Long idOwner) {
         return ownerRepo.findById(idOwner).orElseThrow(() -> new OwnerNotFoundException(idOwner));
     }
 
@@ -38,14 +35,12 @@ public class OwnerService implements IOwnerService{
     @Override
     public List<Owner> findAll()
     {
-        var it = ownerRepo.findAll();
-        List<Owner> owners = new ArrayList<>();
-        it.forEach(owners::add);
-        if(owners.isEmpty())
+        List<Owner> list = ownerRepo.findAll();
+        if(list.isEmpty())
         {
             throw new NoDataFoundException();
         }
-        return owners;
+        return list;
     }
 
     //Count all owner
@@ -69,7 +64,6 @@ public class OwnerService implements IOwnerService{
     @Override
     public void deleteById(Long idOwner)
     {
-        System.out.println("Deleting: " + ownerRepo.findById(idOwner));
         ownerRepo.deleteById(idOwner);
     }
 

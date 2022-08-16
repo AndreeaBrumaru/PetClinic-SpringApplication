@@ -14,14 +14,14 @@ public class Visit {
     private Long id;
     private String reasonForVisit;
     private LocalDate dateOfVisit;
-    //TODO REfactor so that we don't need owner anymore
-    @OneToOne(cascade = CascadeType.ALL)
+    //TODO Refactor so that we don't need owner anymore
+    @OneToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "ownerId")
     private Owner owner;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "pet_id", referencedColumnName = "petId")
     private Pet pet;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "vet_id", referencedColumnName = "vetId")
     private Vet vet;
 

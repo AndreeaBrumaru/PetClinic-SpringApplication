@@ -1,32 +1,35 @@
 package com.practice.petclinicspringapplication.controller;
 
+import com.practice.petclinicspringapplication.dto.VisitDto;
 import com.practice.petclinicspringapplication.exception.PetNotFoundException;
 import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
 import com.practice.petclinicspringapplication.exception.VetNotFoundException;
 import com.practice.petclinicspringapplication.model.Visit;
-import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import com.practice.petclinicspringapplication.repository.VetRepo;
 import com.practice.petclinicspringapplication.service.IVisitService;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class VisitController {
 
     private final IVisitService visitService;
-    private final OwnerRepo ownerRepo;
     private final PetRepo petRepo;
     private final VetRepo vetRepo;
+    private final ModelMapper modelMapper;
 
     //Constructor
-    public VisitController(IVisitService visitService, OwnerRepo ownerRepo, PetRepo petRepo, VetRepo vetRepo) {
+    public VisitController(IVisitService visitService, PetRepo petRepo, VetRepo vetRepo, ModelMapper modelMapper) {
         this.visitService = visitService;
-        this.ownerRepo = ownerRepo;
         this.petRepo = petRepo;
         this.vetRepo = vetRepo;
+        this.modelMapper = modelMapper;
     }
 
     //Methods
@@ -46,15 +49,16 @@ public class VisitController {
 
     //Find visit by id
     @GetMapping("/visits/{id}")
-    public Visit findVisit(@PathVariable Long id)
+    public VisitDto findVisit(@PathVariable Long id)
     {
-        return visitService.findById(id);
+        return convertToDto(visitService.findById(id));
     }
 
     //See all visits
     @GetMapping("/visits")
-    public Iterable<Visit> getVisits() {
-        return visitService.findAll();
+    public Iterable<VisitDto> getVisits() {
+        List<Visit> visits = visitService.findAll();
+        return visits.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     //Count all visits
@@ -65,7 +69,6 @@ public class VisitController {
     }
 
     //Update a visit
-    //TODO Make stuff optional
     @PutMapping("/visits/{id}")
     public void update(@PathVariable Long id, @RequestParam Long petId, @RequestParam Long vetId, @RequestBody Visit visit)
     {
@@ -77,5 +80,23 @@ public class VisitController {
     public void delete(@PathVariable Long id)
     {
         visitService.deleteById(id);
+    }
+
+    //Convert to DTO
+    private VisitDto convertToDto(Visit visit)
+    {
+        return modelMapper.map(visit, VisitDto.class);
+    }
+
+    //Convert to Entity
+    private Visit convertToEntity(VisitDto visitDto)
+    {
+        Visit visit = modelMapper.map(visitDto, Visit.class);
+        if(visitDto.getId() != null)
+        {
+            Visit oldVisit = visitService.findById(visitDto.getId());
+            visit.setIdVisit(oldVisit.getIdVisit());
+        }
+        return visit;
     }
 }

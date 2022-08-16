@@ -6,7 +6,6 @@ import com.practice.petclinicspringapplication.model.Vet;
 import com.practice.petclinicspringapplication.repository.VetRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +23,6 @@ public class VetService implements IVetService{
     public void add(Vet newVet)
     {
         vetRepo.save(newVet);
-        System.out.println("Added new vet: " + newVet);
     }
 
     //Find vet by id
@@ -37,9 +35,7 @@ public class VetService implements IVetService{
     @Override
     public List<Vet> findAll()
     {
-        var it = vetRepo.findAll();
-        List<Vet> vets = new ArrayList<>();
-        it.forEach(vets::add);
+        List<Vet> vets = vetRepo.findAll();
         if(vets.isEmpty())
         {
             throw new NoDataFoundException();
@@ -67,7 +63,6 @@ public class VetService implements IVetService{
     @Override
     public void deleteById(Long idVet)
     {
-        System.out.println("Deleting: " + vetRepo.findById(idVet));
         vetRepo.deleteById(idVet);
     }
 }

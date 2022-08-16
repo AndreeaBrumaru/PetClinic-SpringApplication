@@ -1,24 +1,32 @@
 package com.practice.petclinicspringapplication.controller;
 
+import com.practice.petclinicspringapplication.dto.PetDto;
 import com.practice.petclinicspringapplication.exception.OwnerNotFoundException;
 import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
 import com.practice.petclinicspringapplication.model.Pet;
 import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.service.IPetService;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+//TODO Importing lists is weird
 @RestController
 public class PetController
 {
     private final IPetService petService;
     private final OwnerRepo ownerRepo;
+    private final ModelMapper modelMapper;
 
     //Constructor
-    public PetController(IPetService petService, OwnerRepo ownerRepo) {
+    public PetController(IPetService petService, OwnerRepo ownerRepo, ModelMapper modelMapper) {
         this.petService = petService;
         this.ownerRepo = ownerRepo;
+        this.modelMapper = modelMapper;
     }
 
     //Methods
@@ -36,15 +44,16 @@ public class PetController
 
     //Find pet by id
     @GetMapping("/pets/{id}")
-    public Pet findVet(@PathVariable Long id)
+    public PetDto findVet(@PathVariable Long id)
     {
-        return petService.findById(id);
+        return convertToDto(petService.findById(id));
     }
 
     //See all pets
     @GetMapping("/pets")
-    public Iterable<Pet> getPets() {
-        return petService.findAll();
+    public Iterable<PetDto> getPets() {
+        List<Pet> pets = petService.findAll();
+        return pets.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     //Count all pets
@@ -56,7 +65,7 @@ public class PetController
 
     //Update a pet
     @PutMapping("/pets/{id}")
-    public void update(@PathVariable Long id, @RequestParam(required = false) Long ownerId, @RequestBody Pet pet)
+    public void update(@PathVariable Long id, @RequestParam Long ownerId, @RequestBody Pet pet)
     {
         petService.update(id, pet, ownerId);
     }
@@ -66,5 +75,23 @@ public class PetController
     public void delete(@PathVariable Long id)
     {
         petService.deleteById(id);
+    }
+
+    //Convert Entity to dto
+    private PetDto convertToDto(Pet pet)
+    {
+        return modelMapper.map(pet, PetDto.class);
+    }
+
+    //Convert Dto to entity
+    private Pet convertToEntity(PetDto petDto) throws ParseException
+    {
+        Pet pet = modelMapper.map(petDto, Pet.class);
+        if(petDto.getId() != null)
+        {
+            Pet oldPet = petService.findById(petDto.getId());
+            pet.setIdPet(oldPet.getIdPet());
+        }
+        return pet;
     }
 }

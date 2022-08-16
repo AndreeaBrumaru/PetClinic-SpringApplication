@@ -10,7 +10,6 @@ import com.practice.petclinicspringapplication.repository.VetRepo;
 import com.practice.petclinicspringapplication.repository.VisitRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,7 +33,6 @@ public class VisitService implements IVisitService
     public void add(Visit visit)
     {
         visitRepo.save(visit);
-        System.out.println("Added new visit receipt: " + visit);
     }
 
     //Find visit by id
@@ -48,9 +46,7 @@ public class VisitService implements IVisitService
     @Override
     public List<Visit> findAll()
     {
-        var it = visitRepo.findAll();
-        List<Visit> visits = new ArrayList<>();
-        it.forEach(visits::add);
+        List<Visit> visits = visitRepo.findAll();
         if(visits.isEmpty())
         {
             throw new NoDataFoundException();
@@ -81,8 +77,6 @@ public class VisitService implements IVisitService
     @Override
     public void deleteById(Long idVisit)
     {
-        System.out.println("Deleting: " + visitRepo.findById(idVisit));
-        //TODO Deleting visit deletes pet and vet associated with it
         visitRepo.deleteById(idVisit);
     }
 

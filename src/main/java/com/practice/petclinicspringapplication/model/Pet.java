@@ -15,7 +15,7 @@ public class Pet{
     private String namePet;
     private String petType;
     private LocalDate birthDate;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "ownerId")
     private Owner owner;
 

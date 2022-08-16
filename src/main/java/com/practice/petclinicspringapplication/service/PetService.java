@@ -8,7 +8,6 @@ import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,7 +27,6 @@ public class PetService implements IPetService{
     public void add(Pet newPet)
     {
         petRepo.save(newPet);
-        System.out.println("Added new pet: " + newPet);
     }
 
     //Find pet by id
@@ -42,9 +40,7 @@ public class PetService implements IPetService{
     @Override
     public List<Pet> findAll()
     {
-        var it = petRepo.findAll();
-        List<Pet> pets = new ArrayList<>();
-        it.forEach(pets::add);
+        List<Pet> pets = petRepo.findAll();
         if(pets.isEmpty())
         {
             throw new NoDataFoundException();
@@ -67,7 +63,6 @@ public class PetService implements IPetService{
         oldPet.setNamePet(pet.getNamePet());
         oldPet.setPetType(pet.getPetType());
         oldPet.setBirthDate(pet.getBirthDate());
-        //TODO Continue this on controller
         oldPet.setOwner(ownerRepo.findById(ownerId).orElseThrow(() -> new OwnerNotFoundException(ownerId)));
         petRepo.save(oldPet);
     }
@@ -76,8 +71,6 @@ public class PetService implements IPetService{
     @Override
     public void deleteById(Long idPet)
     {
-        //TODO Deleting pet also deletes owner by association
-        System.out.println("Deleting: " + petRepo.findById(idPet));
         petRepo.deleteById(idPet);
     }
 }
