@@ -61,6 +61,22 @@ public class VisitController {
         return visits.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    //Find visit by vet
+    @GetMapping("/visits/vet/{vetId}")
+    public Iterable<VisitDto> getByVet(@PathVariable Long vetId)
+    {
+        List<Visit> visits = visitService.findByVet(vetId);
+        return visits.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    //Find visit by pet
+    @GetMapping("/visits/pet/{petId}")
+    public Iterable<VisitDto> getByPet(@PathVariable Long petId)
+    {
+        List<Visit> visits = visitService.findByPet(petId);
+        return visits.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     //Count all visits
     @GetMapping("/visits/count")
     public Long count()

@@ -12,4 +12,5 @@ public interface IPetService {
     void update(Long id, Pet pet, Long ownerId);
 
     void deleteById(Long idPet);
+    List<Pet> findByOwner(Long ownerId);
 }

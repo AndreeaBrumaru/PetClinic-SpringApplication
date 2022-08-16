@@ -47,15 +47,22 @@ public class PetService implements IPetService{
         }
         return pets;
     }
+    //Find by owner
+    @Override
+    public List<Pet> findByOwner(Long ownerId)
+    {
+        return petRepo.findByOwnerId(ownerId);
+    }
 
     //Count all pets
+
     @Override
     public Long count()
     {
         return petRepo.count();
     }
-
     //update pet by id
+
     @Override
     public void update(Long id, Pet pet, Long ownerId)
     {
@@ -66,8 +73,8 @@ public class PetService implements IPetService{
         oldPet.setOwner(ownerRepo.findById(ownerId).orElseThrow(() -> new OwnerNotFoundException(ownerId)));
         petRepo.save(oldPet);
     }
-
     //delete vet by id
+
     @Override
     public void deleteById(Long idPet)
     {

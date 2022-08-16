@@ -55,6 +55,14 @@ public class PetController
         return pets.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    //Find pets by owner
+    @GetMapping("/pets/owner/{ownerId}")
+    public Iterable<PetDto> getPetsByOwner(@PathVariable Long ownerId)
+    {
+        List<Pet> pets = petService.findByOwner(ownerId);
+        return pets.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     //Count all pets
     @GetMapping("/pets/count")
     public Long count()

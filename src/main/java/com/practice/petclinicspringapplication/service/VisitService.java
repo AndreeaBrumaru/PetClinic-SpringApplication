@@ -54,6 +54,20 @@ public class VisitService implements IVisitService
         return visits;
     }
 
+    //Find visit by vet
+    @Override
+    public List<Visit> findByVet(Long vetId)
+    {
+        return visitRepo.findByVetId(vetId);
+    }
+
+    //Find visit by pet
+    @Override
+    public List<Visit> findByPet(Long petId)
+    {
+        return visitRepo.findByPetId(petId);
+    }
+
     //Count all visits
     @Override
     public Long count()
