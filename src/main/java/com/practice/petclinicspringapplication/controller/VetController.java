@@ -6,14 +6,14 @@ import com.practice.petclinicspringapplication.service.IVetService;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.persistence.Transient;
 
 @RestController
 public class VetController {
 
     private final IVetService vetService;
     private final ModelMapper modelMapper;
+
     //Constructor
     public VetController(IVetService vetService, ModelMapper modelMapper) {
         this.vetService = vetService;
@@ -23,8 +23,9 @@ public class VetController {
     //Methods
     //Add vet
     @PostMapping(value="/vets")
-    public void addVet(@RequestBody Vet vet)
+    public void addVet(@RequestBody VetDto vetDto)
     {
+        Vet vet = convertToEntity(vetDto);
         vetService.add(vet);
     }
 
@@ -32,14 +33,14 @@ public class VetController {
     @GetMapping("/vets/{id}")
     public VetDto findVet(@PathVariable Long id)
     {
-        return convertToDto(vetService.findById(id));
+        //TODO Make it show all visits that vet had to do
+        return vetService.findById(id);
     }
 
     //See all vets
     @GetMapping("/vets")
     public Iterable<VetDto> getVets() {
-        List<Vet> vets = vetService.findAll();
-        return vets.stream().map(this::convertToDto).collect(Collectors.toList());
+        return vetService.findAll();
     }
 
     //Count all vets
@@ -51,8 +52,9 @@ public class VetController {
 
     //Update a vet
     @PutMapping("/vets/{id}")
-    public void update(@PathVariable Long id, @RequestBody Vet vet)
+    public void update(@PathVariable Long id, @RequestBody VetDto vetDto)
     {
+        Vet vet = convertToEntity(vetDto);
         vetService.update(id, vet);
     }
 
@@ -63,21 +65,10 @@ public class VetController {
         vetService.deleteById(id);
     }
 
-    //Convert Entity to DTO
-    private VetDto convertToDto(Vet vet)
-    {
-        return modelMapper.map(vet, VetDto.class);
-    }
-
     //Convert DTO to entity
+    @Transient
     private Vet convertToEntity(VetDto vetDto)
     {
-        Vet vet = modelMapper.map(vetDto, Vet.class);
-        if(vetDto.getId() != null)
-        {
-            Vet oldVet = vetService.findById(vetDto.getId());
-            vet.setIdVet(oldVet.getIdVet());
-        }
-        return vet;
+        return modelMapper.map(vetDto, Vet.class);
     }
 }

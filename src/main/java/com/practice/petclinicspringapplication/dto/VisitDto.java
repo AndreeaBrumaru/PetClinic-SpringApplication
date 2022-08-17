@@ -7,8 +7,8 @@ import java.time.LocalDate;
 
 public class VisitDto {
     private Long id;
-    private String reason;
-    private LocalDate date;
+    private String reasonForVisit;
+    private LocalDate dateOfVisit;
     private Pet pet;
     private Vet vet;
 
@@ -21,20 +21,20 @@ public class VisitDto {
         this.id = id;
     }
 
-    public String getReason() {
-        return reason;
+    public String getReasonForVisit() {
+        return reasonForVisit;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setReasonForVisit(String reasonForVisit) {
+        this.reasonForVisit = reasonForVisit;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getDateOfVisit() {
+        return dateOfVisit;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDateOfVisit(LocalDate dateOfVisit) {
+        this.dateOfVisit = dateOfVisit;
     }
 
     public Pet getPet() {

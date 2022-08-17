@@ -7,11 +7,10 @@ import com.practice.petclinicspringapplication.service.IOwnerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Transient;
 import java.text.ParseException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-//TODO Importing lists is wierd
+
 @RestController
 public class OwnerController {
     private final IOwnerService ownerService;
@@ -25,32 +24,30 @@ public class OwnerController {
 
     //Methods
     //Add owner
-    //TODO Is this supposed to be DTO'd?
     @PostMapping("/owners")
-    public void add(@RequestParam Optional<Long> id, @RequestBody Owner owner)
-    {
+    public void add(@RequestParam Optional<Long> id, @RequestBody OwnerDto ownerdto) throws ParseException {
         if(id.isPresent())
         {
             //Throws exception if id has been inserted
             throw new UpdateObjectInPostException();
         }
+        Owner owner = convertToEntity(ownerdto);
         ownerService.add(owner);
     }
 
     //Find owner by id
-    //TODO Do this for visit
     @GetMapping("/owners/{id}")
     public OwnerDto findOwner(@PathVariable Long id)
     {
-        return convertToDto(ownerService.findById(id));
+        //TODO Make it show all pets of owner as well
+        return ownerService.findById(id);
+
     }
 
     //See all owners
-    //TODO Do this to visit
     @GetMapping("/owners")
     public Iterable<OwnerDto> getOwners() {
-        List<Owner> owners = ownerService.findAll();
-        return owners.stream().map(this::convertToDto).collect(Collectors.toList());
+        return ownerService.findAll();
     }
 
     //Count all owners
@@ -61,37 +58,25 @@ public class OwnerController {
     }
 
     //Update an owner
-    //TODO Is this supposed to be DTO'd?
     @PutMapping("/owners/{id}")
-    public void update(@PathVariable Long id, @RequestBody Owner owner)
-    {
+    public void update(@PathVariable Long id, @RequestBody OwnerDto ownerDto) throws ParseException {
+        Owner owner = convertToEntity(ownerDto);
         ownerService.update(id, owner);
     }
 
     //delete owner by id
-    //TODO Is this supposed to be DTO'd?
     @DeleteMapping("/owners/{id}")
     public void delete(@PathVariable Long id)
     {
         ownerService.deleteById(id);
     }
 
-    //TODO Do this to visit
-    //Convert entity to Dto
-    private OwnerDto convertToDto(Owner owner)
-    {
-        return modelMapper.map(owner, OwnerDto.class);
-    }
+
 
     //convert Dto to entity
+    @Transient
     private Owner convertToEntity(OwnerDto ownerDto) throws ParseException
     {
-        Owner owner = modelMapper.map(ownerDto, Owner.class);
-        if(ownerDto.getId() != null)
-        {
-            Owner oldOwner = ownerService.findById(ownerDto.getId());
-            owner.setIdOwner(oldOwner.getIdOwner());
-        }
-        return owner;
+        return modelMapper.map(ownerDto, Owner.class);
     }
 }

@@ -1,20 +1,25 @@
 package com.practice.petclinicspringapplication.service;
 
+import com.practice.petclinicspringapplication.dto.OwnerDto;
 import com.practice.petclinicspringapplication.exception.NoDataFoundException;
 import com.practice.petclinicspringapplication.exception.OwnerNotFoundException;
 import com.practice.petclinicspringapplication.model.Owner;
 import com.practice.petclinicspringapplication.repository.OwnerRepo;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OwnerService implements IOwnerService{
     private final OwnerRepo ownerRepo;
+    private final ModelMapper modelMapper;
 
     //Constructor
-    public OwnerService(OwnerRepo ownerRepo) {
+    public OwnerService(OwnerRepo ownerRepo, ModelMapper modelMapper) {
         this.ownerRepo = ownerRepo;
+        this.modelMapper = modelMapper;
     }
 
     //Methods
@@ -27,20 +32,22 @@ public class OwnerService implements IOwnerService{
 
     //Find owner by id
     @Override
-    public Owner findById(Long idOwner) {
-        return ownerRepo.findById(idOwner).orElseThrow(() -> new OwnerNotFoundException(idOwner));
+    public OwnerDto findById(Long idOwner) {
+        Owner owner = findOwnerService(idOwner);
+        return convertToDto(owner);
     }
 
     //Find all owners
     @Override
-    public List<Owner> findAll()
+    public List<OwnerDto> findAll()
     {
         List<Owner> list = ownerRepo.findAll();
         if(list.isEmpty())
         {
             throw new NoDataFoundException();
         }
-        return list;
+
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     //Count all owner
@@ -54,7 +61,7 @@ public class OwnerService implements IOwnerService{
     @Override
     public void update(Long id, Owner owner)
     {
-        Owner oldOwner = findById(id);
+        Owner oldOwner = findOwnerService(id);
         oldOwner.setFirstName(owner.getFirstName());
         oldOwner.setLastName(owner.getLastName());
         ownerRepo.save(oldOwner);
@@ -67,4 +74,15 @@ public class OwnerService implements IOwnerService{
         ownerRepo.deleteById(idOwner);
     }
 
+    //Convert entity to Dto
+    private OwnerDto convertToDto(Owner owner)
+    {
+        return modelMapper.map(owner, OwnerDto.class);
+    }
+
+    //Find owner, used only by OwnerService
+    private Owner findOwnerService(Long idOwner)
+    {
+        return ownerRepo.findById(idOwner).orElseThrow(() -> new OwnerNotFoundException(idOwner));
+    }
 }

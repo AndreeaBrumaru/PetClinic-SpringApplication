@@ -1,5 +1,6 @@
 package com.practice.petclinicspringapplication.service;
 
+import com.practice.petclinicspringapplication.dto.VisitDto;
 import com.practice.petclinicspringapplication.exception.NoDataFoundException;
 import com.practice.petclinicspringapplication.exception.PetNotFoundException;
 import com.practice.petclinicspringapplication.exception.VetNotFoundException;
@@ -8,9 +9,11 @@ import com.practice.petclinicspringapplication.model.Visit;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import com.practice.petclinicspringapplication.repository.VetRepo;
 import com.practice.petclinicspringapplication.repository.VisitRepo;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VisitService implements IVisitService
@@ -18,13 +21,14 @@ public class VisitService implements IVisitService
     private final VisitRepo visitRepo;
     private final PetRepo petRepo;
     private final VetRepo vetRepo;
-
+    private final ModelMapper modelMapper;
 
     //Constructor
-    public VisitService(VisitRepo visitRepo, PetRepo petRepo, VetRepo vetRepo) {
+    public VisitService(VisitRepo visitRepo, PetRepo petRepo, VetRepo vetRepo, ModelMapper modelMapper) {
         this.visitRepo = visitRepo;
         this.petRepo = petRepo;
         this.vetRepo = vetRepo;
+        this.modelMapper = modelMapper;
     }
 
     //Methods
@@ -37,35 +41,38 @@ public class VisitService implements IVisitService
 
     //Find visit by id
     @Override
-    public Visit findById(Long idVisit)
+    public VisitDto findById(Long idVisit)
     {
-        return visitRepo.findById(idVisit).orElseThrow(() -> new VisitNotFoundException(idVisit));
+        Visit visit = findVisitService(idVisit);
+        return convertToDto(visit);
     }
 
     //Find all visits
     @Override
-    public List<Visit> findAll()
+    public List<VisitDto> findAll()
     {
         List<Visit> visits = visitRepo.findAll();
         if(visits.isEmpty())
         {
             throw new NoDataFoundException();
         }
-        return visits;
+        return visits.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     //Find visit by vet
     @Override
-    public List<Visit> findByVet(Long vetId)
+    public List<VisitDto> findByVet(Long vetId)
     {
-        return visitRepo.findByVetId(vetId);
+        List<Visit> visits = visitRepo.findByVetId(vetId);
+        return visits.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     //Find visit by pet
     @Override
-    public List<Visit> findByPet(Long petId)
+    public List<VisitDto> findByPet(Long petId)
     {
-        return visitRepo.findByPetId(petId);
+        List<Visit> visits = visitRepo.findByPetId(petId);
+        return visits.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     //Count all visits
@@ -79,7 +86,7 @@ public class VisitService implements IVisitService
     @Override
     public void update(Long id, Visit visit, Long petId, Long vetId)
     {
-        Visit oldVisit = findById(id);
+        Visit oldVisit = findVisitService(id);
         oldVisit.setReasonForVisit(visit.getReasonForVisit());
         oldVisit.setDateOfVisit(visit.getDateOfVisit());
         oldVisit.setPet(petRepo.findById(petId).orElseThrow(() -> new PetNotFoundException(petId)));
@@ -94,4 +101,15 @@ public class VisitService implements IVisitService
         visitRepo.deleteById(idVisit);
     }
 
+    //Convert to DTO
+    private VisitDto convertToDto(Visit visit)
+    {
+        return modelMapper.map(visit, VisitDto.class);
+    }
+
+    //Find visit, used only by VisitService
+    private Visit findVisitService(Long idVisit)
+    {
+        return visitRepo.findById(idVisit).orElseThrow(() -> new VisitNotFoundException(idVisit));
+    }
 }

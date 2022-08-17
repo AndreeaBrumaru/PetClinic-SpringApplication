@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface PetRepo extends JpaRepository<Pet, Long> {
+    //TODO If validare gata, scrieti niste query-uri mai complexe folosing @Query(nu native query)
+    //TODO JOIN, PAGINATION...
     List<Pet> findByOwnerId(Long ownerId);
 }

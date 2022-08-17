@@ -9,10 +9,9 @@ import com.practice.petclinicspringapplication.service.IPetService;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Transient;
 import java.text.ParseException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class PetController
@@ -31,36 +30,35 @@ public class PetController
     //Methods
     //Add pet
     @PostMapping("/pets")
-    public void add(@RequestParam Optional<Long> id, @RequestParam(required = false) Long ownerId, @RequestBody Pet pet)
-    {
+    public void add(@RequestParam Optional<Long> id, @RequestParam Long ownerId, @RequestBody PetDto petDto) throws ParseException {
        if(id.isPresent())
        {
            throw new UpdateObjectInPostException();
        }
+       Pet pet = convertToEntity(petDto);
        pet.setOwner(ownerRepo.findById(ownerId).orElseThrow(()-> new OwnerNotFoundException(ownerId)));
-        petService.add(pet);
+       petService.add(pet);
     }
 
     //Find pet by id
     @GetMapping("/pets/{id}")
     public PetDto findVet(@PathVariable Long id)
     {
-        return convertToDto(petService.findById(id));
+        //TODO Make it show all visits of pet as well
+        return petService.findById(id);
     }
 
     //See all pets
     @GetMapping("/pets")
     public Iterable<PetDto> getPets() {
-        List<Pet> pets = petService.findAll();
-        return pets.stream().map(this::convertToDto).collect(Collectors.toList());
+        return petService.findAll();
     }
 
     //Find pets by owner
     @GetMapping("/pets/owner/{ownerId}")
     public Iterable<PetDto> getPetsByOwner(@PathVariable Long ownerId)
     {
-        List<Pet> pets = petService.findByOwner(ownerId);
-        return pets.stream().map(this::convertToDto).collect(Collectors.toList());
+        return petService.findByOwner(ownerId);
     }
 
     //Count all pets
@@ -72,8 +70,8 @@ public class PetController
 
     //Update a pet
     @PutMapping("/pets/{id}")
-    public void update(@PathVariable Long id, @RequestParam Long ownerId, @RequestBody Pet pet)
-    {
+    public void update(@PathVariable Long id, @RequestParam Long ownerId, @RequestBody PetDto petDto) throws ParseException {
+        Pet pet = convertToEntity(petDto);
         petService.update(id, pet, ownerId);
     }
 
@@ -84,21 +82,10 @@ public class PetController
         petService.deleteById(id);
     }
 
-    //Convert Entity to dto
-    private PetDto convertToDto(Pet pet)
-    {
-        return modelMapper.map(pet, PetDto.class);
-    }
-
     //Convert Dto to entity
+    @Transient
     private Pet convertToEntity(PetDto petDto) throws ParseException
     {
-        Pet pet = modelMapper.map(petDto, Pet.class);
-        if(petDto.getId() != null)
-        {
-            Pet oldPet = petService.findById(petDto.getId());
-            pet.setIdPet(oldPet.getIdPet());
-        }
-        return pet;
+        return modelMapper.map(petDto, Pet.class);
     }
 }

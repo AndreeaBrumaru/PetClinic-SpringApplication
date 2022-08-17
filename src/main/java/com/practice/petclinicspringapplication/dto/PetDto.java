@@ -6,8 +6,8 @@ import java.time.LocalDate;
 
 public class PetDto {
     private Long id;
-    private String name;
-    private String type;
+    private String namePet;
+    private String petType;
     private LocalDate birthDate;
     private Owner owner;
 
@@ -20,20 +20,20 @@ public class PetDto {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNamePet() {
+        return namePet;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNamePet(String namePet) {
+        this.namePet = namePet;
     }
 
-    public String getType() {
-        return type;
+    public String getPetType() {
+        return petType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPetType(String petType) {
+        this.petType = petType;
     }
 
     public LocalDate getBirthDate() {
