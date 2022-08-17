@@ -9,9 +9,11 @@ import com.practice.petclinicspringapplication.repository.PetRepo;
 import com.practice.petclinicspringapplication.repository.VetRepo;
 import com.practice.petclinicspringapplication.service.IVisitService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -35,7 +37,7 @@ public class VisitController {
     //Methods
     //Add visit
     @PostMapping("/visits")
-    public void add(@RequestParam Optional<Long> id, @RequestParam Long petId, @RequestParam Long vetId, @RequestBody VisitDto visitDto) throws ParseException {
+    public ResponseEntity<String> add(@RequestParam Optional<Long> id, @RequestParam Long petId, @RequestParam Long vetId, @Valid @RequestBody VisitDto visitDto) throws ParseException {
         if(id.isPresent())
         {
             throw new UpdateObjectInPostException();
@@ -45,6 +47,7 @@ public class VisitController {
         visit.setPet(petRepo.findById(petId).orElseThrow(() -> new PetNotFoundException(petId)));
         visit.setVet(vetRepo.findById(vetId).orElseThrow(() -> new VetNotFoundException(vetId)));
         visitService.add(visit);
+        return ResponseEntity.ok("New visit added");
     }
 
     //Find visit by id
@@ -76,23 +79,30 @@ public class VisitController {
 
     //Count all visits
     @GetMapping("/visits/count")
-    public Long count()
+    public String count()
     {
-        return visitService.count();
+        return "There are " + visitService.count() + " visits registered in the database";
     }
 
     //Update a visit
     @PutMapping("/visits/{id}")
-    public void update(@PathVariable Long id, @RequestParam Long petId, @RequestParam Long vetId, @RequestBody VisitDto visitDto) throws ParseException {
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestParam Long petId, @RequestParam Long vetId, @Valid @RequestBody VisitDto visitDto) throws ParseException {
         Visit visit = convertToEntity(visitDto);
-        visitService.update(id, visit, petId, vetId);
+        if(petId != null && vetId != null)
+        {
+            visitService.update(id, visit, petId, vetId);
+            return ResponseEntity.ok("Visit updated");
+        }
+        visitService.update(id, visit);
+        return ResponseEntity.ok("Visit updated");
     }
 
     //delete visit by id
     @DeleteMapping("/visits/{id}")
-    public void delete(@PathVariable Long id)
+    public ResponseEntity<String> delete(@PathVariable Long id)
     {
         visitService.deleteById(id);
+        return ResponseEntity.ok("Visit deleted");
     }
 
     //Convert to Entity

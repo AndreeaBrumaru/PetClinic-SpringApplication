@@ -9,15 +9,10 @@ public interface IVisitService {
     void add(Visit visit);
     VisitDto findById(Long idVisit);
     List<VisitDto> findAll();
-
-    //Find visit by vet
     List<VisitDto> findByVet(Long vetId);
-
-    //Find visit by pet
     List<VisitDto> findByPet(Long petId);
-
     Long count();
     void update(Long id, Visit visit, Long petId, Long vetId);
-
+    void update(Long id, Visit visit);
     void deleteById(Long idVisit);
 }

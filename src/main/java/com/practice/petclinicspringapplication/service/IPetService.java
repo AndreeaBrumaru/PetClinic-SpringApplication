@@ -11,7 +11,7 @@ public interface IPetService {
     List<PetDto> findAll();
     Long count();
     void update(Long id, Pet pet, Long ownerId);
-
+    void update(Long id, Pet pet);
     void deleteById(Long idPet);
     List<PetDto> findByOwner(Long ownerId);
 }

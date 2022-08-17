@@ -94,6 +94,16 @@ public class VisitService implements IVisitService
         visitRepo.save(oldVisit);
     }
 
+    //Update a visit without pet and vet
+    @Override
+    public void update(Long id, Visit visit)
+    {
+        Visit oldVisit = findVisitService(id);
+        oldVisit.setReasonForVisit(visit.getReasonForVisit());
+        oldVisit.setDateOfVisit(visit.getDateOfVisit());
+        visitRepo.save(oldVisit);
+    }
+
     //delete visit by id
     @Override
     public void deleteById(Long idVisit)

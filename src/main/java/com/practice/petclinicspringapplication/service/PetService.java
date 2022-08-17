@@ -80,6 +80,17 @@ public class PetService implements IPetService{
         oldPet.setOwner(ownerRepo.findById(ownerId).orElseThrow(() -> new OwnerNotFoundException(ownerId)));
         petRepo.save(oldPet);
     }
+
+    //For pets withour owners
+    @Override
+    public void update(Long id, Pet pet)
+    {
+        Pet oldPet = findPetService(id);
+        oldPet.setNamePet(pet.getNamePet());
+        oldPet.setPetType(pet.getPetType());
+        oldPet.setBirthDate(pet.getBirthDate());
+        petRepo.save(oldPet);
+    }
     //delete vet by id
     @Override
     public void deleteById(Long idPet)

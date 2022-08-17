@@ -7,9 +7,11 @@ import com.practice.petclinicspringapplication.model.Pet;
 import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.service.IPetService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.Optional;
 
@@ -30,14 +32,17 @@ public class PetController
     //Methods
     //Add pet
     @PostMapping("/pets")
-    public void add(@RequestParam Optional<Long> id, @RequestParam Long ownerId, @RequestBody PetDto petDto) throws ParseException {
+    public ResponseEntity<String> add(@RequestParam Optional<Long> id, @RequestParam(required = false) Long ownerId, @Valid @RequestBody PetDto petDto) throws ParseException {
        if(id.isPresent())
        {
            throw new UpdateObjectInPostException();
        }
        Pet pet = convertToEntity(petDto);
-       pet.setOwner(ownerRepo.findById(ownerId).orElseThrow(()-> new OwnerNotFoundException(ownerId)));
+       if(ownerId != null) {
+           pet.setOwner(ownerRepo.findById(ownerId).orElseThrow(() -> new OwnerNotFoundException(ownerId)));
+       }
        petService.add(pet);
+       return ResponseEntity.ok("New pet added.");
     }
 
     //Find pet by id
@@ -63,23 +68,30 @@ public class PetController
 
     //Count all pets
     @GetMapping("/pets/count")
-    public Long count()
+    public String count()
     {
-        return petService.count();
+        return "There are " + petService.count() + " pets registered in the database.";
     }
 
     //Update a pet
     @PutMapping("/pets/{id}")
-    public void update(@PathVariable Long id, @RequestParam Long ownerId, @RequestBody PetDto petDto) throws ParseException {
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestParam(required = false) Long ownerId, @Valid @RequestBody PetDto petDto) throws ParseException {
         Pet pet = convertToEntity(petDto);
-        petService.update(id, pet, ownerId);
+        if(ownerId != null)
+        {
+            petService.update(id, pet, ownerId);
+            return ResponseEntity.ok("Pet updated.");
+        }
+        petService.update(id, pet);
+        return ResponseEntity.ok("Pet updated.");
     }
 
     //delete pet by id
     @DeleteMapping("/pets/{id}")
-    public void delete(@PathVariable Long id)
+    public ResponseEntity<String> delete(@PathVariable Long id)
     {
         petService.deleteById(id);
+        return ResponseEntity.ok("Pet deleted.");
     }
 
     //Convert Dto to entity

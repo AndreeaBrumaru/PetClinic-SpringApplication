@@ -5,9 +5,11 @@ import com.practice.petclinicspringapplication.exception.UpdateObjectInPostExcep
 import com.practice.petclinicspringapplication.model.Owner;
 import com.practice.petclinicspringapplication.service.IOwnerService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.Optional;
 
@@ -25,7 +27,7 @@ public class OwnerController {
     //Methods
     //Add owner
     @PostMapping("/owners")
-    public void add(@RequestParam Optional<Long> id, @RequestBody OwnerDto ownerdto) throws ParseException {
+    public ResponseEntity<String> add(@RequestParam Optional<Long> id, @Valid @RequestBody OwnerDto ownerdto) throws ParseException {
         if(id.isPresent())
         {
             //Throws exception if id has been inserted
@@ -33,6 +35,7 @@ public class OwnerController {
         }
         Owner owner = convertToEntity(ownerdto);
         ownerService.add(owner);
+        return ResponseEntity.ok("New owner added.");
     }
 
     //Find owner by id
@@ -41,7 +44,6 @@ public class OwnerController {
     {
         //TODO Make it show all pets of owner as well
         return ownerService.findById(id);
-
     }
 
     //See all owners
@@ -52,26 +54,26 @@ public class OwnerController {
 
     //Count all owners
     @GetMapping("/owners/count")
-    public Long count()
+    public String count()
     {
-        return ownerService.count();
+        return "There are " + ownerService.count() + " owners registered on the database.";
     }
 
     //Update an owner
     @PutMapping("/owners/{id}")
-    public void update(@PathVariable Long id, @RequestBody OwnerDto ownerDto) throws ParseException {
+    public ResponseEntity<String> update(@PathVariable Long id, @Valid @RequestBody OwnerDto ownerDto) throws ParseException {
         Owner owner = convertToEntity(ownerDto);
         ownerService.update(id, owner);
+        return ResponseEntity.ok("Owner updated.");
     }
 
     //delete owner by id
     @DeleteMapping("/owners/{id}")
-    public void delete(@PathVariable Long id)
+    public ResponseEntity<String> delete(@PathVariable Long id)
     {
         ownerService.deleteById(id);
+        return ResponseEntity.ok("Owner deleted.");
     }
-
-
 
     //convert Dto to entity
     @Transient

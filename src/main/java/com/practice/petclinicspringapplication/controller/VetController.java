@@ -4,9 +4,11 @@ import com.practice.petclinicspringapplication.dto.VetDto;
 import com.practice.petclinicspringapplication.model.Vet;
 import com.practice.petclinicspringapplication.service.IVetService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Transient;
+import javax.validation.Valid;
 
 @RestController
 public class VetController {
@@ -22,11 +24,12 @@ public class VetController {
 
     //Methods
     //Add vet
-    @PostMapping(value="/vets")
-    public void addVet(@RequestBody VetDto vetDto)
+    @PostMapping("/vets")
+    public ResponseEntity<String> addVet(@Valid @RequestBody VetDto vetDto)
     {
         Vet vet = convertToEntity(vetDto);
         vetService.add(vet);
+        return ResponseEntity.ok("New vet added");
     }
 
     //Find vet by id
@@ -45,24 +48,26 @@ public class VetController {
 
     //Count all vets
     @GetMapping("/vets/count")
-    public Long count()
+    public String count()
     {
-        return vetService.count();
+        return "There are " + vetService.count() + " vets registered in the database";
     }
 
     //Update a vet
     @PutMapping("/vets/{id}")
-    public void update(@PathVariable Long id, @RequestBody VetDto vetDto)
+    public ResponseEntity<String> update(@PathVariable Long id,@Valid @RequestBody VetDto vetDto)
     {
         Vet vet = convertToEntity(vetDto);
         vetService.update(id, vet);
+        return ResponseEntity.ok("Vet updated");
     }
 
     //delete vet by id
     @DeleteMapping("vets/{id}")
-    public void delete(@PathVariable Long id)
+    public ResponseEntity<String> delete(@PathVariable Long id)
     {
         vetService.deleteById(id);
+        return ResponseEntity.ok("Vet deleted");
     }
 
     //Convert DTO to entity
