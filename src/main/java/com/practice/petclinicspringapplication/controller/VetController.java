@@ -1,6 +1,8 @@
 package com.practice.petclinicspringapplication.controller;
 
+import com.practice.petclinicspringapplication.dto.PetDto;
 import com.practice.petclinicspringapplication.dto.VetDto;
+import com.practice.petclinicspringapplication.dto.VisitDto;
 import com.practice.petclinicspringapplication.model.Vet;
 import com.practice.petclinicspringapplication.service.IVetService;
 import org.modelmapper.ModelMapper;
@@ -36,7 +38,6 @@ public class VetController {
     @GetMapping("/vets/{id}")
     public VetDto findVet(@PathVariable Long id)
     {
-        //TODO Make it show all visits that vet had to do
         return vetService.findById(id);
     }
 
@@ -44,6 +45,20 @@ public class VetController {
     @GetMapping("/vets")
     public Iterable<VetDto> getVets() {
         return vetService.findAll();
+    }
+
+    //See all the vets visits
+    @GetMapping("/vets/{id}/visits")
+    public Iterable<VisitDto> getVisits(@PathVariable Long id)
+    {
+        return vetService.findAllVisits(id);
+    }
+
+    //See all the pets the vet has taken care of
+    @GetMapping("/vets/{id}/pets")
+    public Iterable<PetDto> getPets(@PathVariable Long id)
+    {
+        return vetService.findAllPets(id);
     }
 
     //Count all vets

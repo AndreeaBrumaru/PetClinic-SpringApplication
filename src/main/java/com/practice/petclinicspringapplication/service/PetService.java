@@ -1,10 +1,12 @@
 package com.practice.petclinicspringapplication.service;
 
 import com.practice.petclinicspringapplication.dto.PetDto;
+import com.practice.petclinicspringapplication.dto.VisitDto;
 import com.practice.petclinicspringapplication.exception.NoDataFoundException;
 import com.practice.petclinicspringapplication.exception.OwnerNotFoundException;
 import com.practice.petclinicspringapplication.exception.PetNotFoundException;
 import com.practice.petclinicspringapplication.model.Pet;
+import com.practice.petclinicspringapplication.model.Visit;
 import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.repository.PetRepo;
 import org.modelmapper.ModelMapper;
@@ -62,6 +64,15 @@ public class PetService implements IPetService{
         return pets.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    //See all the pets visits
+    @Override
+    public List<VisitDto> findPetsVisits(Long petId)
+    {
+        Pet pet = findPetService(petId);
+        List<Visit> visits = petRepo.getVisits(pet);
+        return visits.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     //Count all pets
     @Override
     public Long count()
@@ -81,7 +92,7 @@ public class PetService implements IPetService{
         petRepo.save(oldPet);
     }
 
-    //For pets withour owners
+    //For pets without owners
     @Override
     public void update(Long id, Pet pet)
     {
@@ -102,6 +113,10 @@ public class PetService implements IPetService{
     private PetDto convertToDto(Pet pet)
     {
         return modelMapper.map(pet, PetDto.class);
+    }
+    private VisitDto convertToDto(Visit visit)
+    {
+        return modelMapper.map(visit, VisitDto.class);
     }
 
     //Find pet, used only by PetService

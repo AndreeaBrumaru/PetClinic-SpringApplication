@@ -1,6 +1,8 @@
 package com.practice.petclinicspringapplication.controller;
 
 import com.practice.petclinicspringapplication.dto.OwnerDto;
+import com.practice.petclinicspringapplication.dto.PetDto;
+import com.practice.petclinicspringapplication.dto.VisitDto;
 import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
 import com.practice.petclinicspringapplication.model.Owner;
 import com.practice.petclinicspringapplication.service.IOwnerService;
@@ -42,7 +44,6 @@ public class OwnerController {
     @GetMapping("/owners/{id}")
     public OwnerDto findOwner(@PathVariable Long id)
     {
-        //TODO Make it show all pets of owner as well
         return ownerService.findById(id);
     }
 
@@ -52,6 +53,19 @@ public class OwnerController {
         return ownerService.findAll();
     }
 
+    //See all the owners pets
+    @GetMapping("/owners/{id}/pets")
+    public Iterable<PetDto> getOwnerPets(@PathVariable Long id)
+    {
+        return ownerService.getPets(id);
+    }
+
+    //See all the owners visits
+    @GetMapping("/owners/{id}/visits")
+    public Iterable<VisitDto> getOwnerVisits(@PathVariable Long id)
+    {
+        return ownerService.getVisits(id);
+    }
     //Count all owners
     @GetMapping("/owners/count")
     public String count()

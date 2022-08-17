@@ -1,9 +1,13 @@
 package com.practice.petclinicspringapplication.service;
 
+import com.practice.petclinicspringapplication.dto.PetDto;
 import com.practice.petclinicspringapplication.dto.VetDto;
+import com.practice.petclinicspringapplication.dto.VisitDto;
 import com.practice.petclinicspringapplication.exception.NoDataFoundException;
 import com.practice.petclinicspringapplication.exception.VetNotFoundException;
+import com.practice.petclinicspringapplication.model.Pet;
 import com.practice.petclinicspringapplication.model.Vet;
+import com.practice.petclinicspringapplication.model.Visit;
 import com.practice.petclinicspringapplication.repository.VetRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -49,6 +53,24 @@ public class VetService implements IVetService{
         return vets.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    //See oll of the vets visits
+    @Override
+    public List<VisitDto> findAllVisits(Long id)
+    {
+        Vet vet = findVetService(id);
+        List<Visit> visits = vetRepo.getVetsVisits(vet);
+        return visits.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    //See all the pets the vet has taken care of
+    @Override
+    public List<PetDto> findAllPets(Long id)
+    {
+        Vet vet = findVetService(id);
+        List<Pet> pets = vetRepo.getVetsPets(vet);
+        return pets.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     //Count all vets
     @Override
     public Long count()
@@ -65,6 +87,7 @@ public class VetService implements IVetService{
         oldVet.setLastName(vet.getLastName());
         vetRepo.save(oldVet);
     }
+
     //delete vet by id
     @Override
     public void deleteById(Long idVet)
@@ -76,6 +99,14 @@ public class VetService implements IVetService{
     private VetDto convertToDto(Vet vet)
     {
         return modelMapper.map(vet, VetDto.class);
+    }
+    private PetDto convertToDto(Pet pet)
+    {
+        return modelMapper.map(pet, PetDto.class);
+    }
+    private VisitDto convertToDto(Visit visit)
+    {
+        return modelMapper.map(visit, VisitDto.class);
     }
 
     //Find vet, used only by VetService

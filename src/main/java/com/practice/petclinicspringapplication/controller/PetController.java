@@ -1,6 +1,7 @@
 package com.practice.petclinicspringapplication.controller;
 
 import com.practice.petclinicspringapplication.dto.PetDto;
+import com.practice.petclinicspringapplication.dto.VisitDto;
 import com.practice.petclinicspringapplication.exception.OwnerNotFoundException;
 import com.practice.petclinicspringapplication.exception.UpdateObjectInPostException;
 import com.practice.petclinicspringapplication.model.Pet;
@@ -49,7 +50,6 @@ public class PetController
     @GetMapping("/pets/{id}")
     public PetDto findVet(@PathVariable Long id)
     {
-        //TODO Make it show all visits of pet as well
         return petService.findById(id);
     }
 
@@ -64,6 +64,13 @@ public class PetController
     public Iterable<PetDto> getPetsByOwner(@PathVariable Long ownerId)
     {
         return petService.findByOwner(ownerId);
+    }
+
+    //See all the pets visits
+    @GetMapping("/pets/{id}/visits")
+    public Iterable<VisitDto> getPetsVisits(@PathVariable Long id)
+    {
+        return petService.findPetsVisits(id);
     }
 
     //Count all pets
