@@ -15,6 +15,12 @@ public class Vet {
     private String lastName;
 
     //Constructor
+    public Vet(Long id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public Vet(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;

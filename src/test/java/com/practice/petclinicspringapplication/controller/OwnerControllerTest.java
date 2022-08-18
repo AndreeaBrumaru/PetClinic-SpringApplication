@@ -151,7 +151,6 @@ public class OwnerControllerTest {
 
         //WHEN
         mvc.perform(MockMvcRequestBuilders.delete("/owners/" + 1)
-                        .content(asJsonString(o1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
