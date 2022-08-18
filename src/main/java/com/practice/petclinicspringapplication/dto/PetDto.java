@@ -27,6 +27,13 @@ public class PetDto {
         this.owner = owner;
     }
 
+    public PetDto(Long id, String namePet, String petType, Owner owner) {
+        this.id = id;
+        this.namePet = namePet;
+        this.petType = petType;
+        this.owner = owner;
+    }
+
     //getters and setters
     public Long getId() {
         return id;

@@ -14,6 +14,11 @@ public class OwnerDto {
     public OwnerDto() {
     }
 
+    public OwnerDto(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public OwnerDto(Long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;

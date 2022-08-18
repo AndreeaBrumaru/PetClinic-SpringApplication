@@ -20,6 +20,12 @@ public class Owner{
         this.lastName = lastName;
     }
 
+    public Owner(Long id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public Owner() {
 
     }

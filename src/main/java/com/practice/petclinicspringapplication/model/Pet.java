@@ -27,6 +27,12 @@ public class Pet{
         this.owner = owner;
     }
 
+    public Pet(String namePet, String petType, Owner owner) {
+        this.namePet = namePet;
+        this.petType = petType;
+        this.owner = owner;
+    }
+
     public Pet(String namePet, String petType) {
         this.namePet = namePet;
         this.petType = petType;
