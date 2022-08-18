@@ -1,15 +1,17 @@
 package com.practice.petclinicspringapplication.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.practice.petclinicspringapplication.dto.OwnerDto;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.practice.petclinicspringapplication.dto.PetDto;
 import com.practice.petclinicspringapplication.dto.VisitDto;
 import com.practice.petclinicspringapplication.model.Owner;
 import com.practice.petclinicspringapplication.model.Pet;
 import com.practice.petclinicspringapplication.model.Vet;
-import com.practice.petclinicspringapplication.service.IOwnerService;
+import com.practice.petclinicspringapplication.repository.OwnerRepo;
+import com.practice.petclinicspringapplication.service.IPetService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,120 +25,103 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.practice.petclinicspringapplication.controller.OwnerControllerTest.asJsonString;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(OwnerController.class)
-public class OwnerControllerTest {
+@WebMvcTest(PetController.class)
+public class PetControllerTest {
 
     @Autowired
     private MockMvc mvc;
     @MockBean
-    private IOwnerService ownerService;
+    private IPetService petService;
+    @MockBean
+    private OwnerRepo ownerRepo;
     @MockBean
     private ModelMapper modelMapper;
 
     //Tests findById
     @Test
-    public void testFindById() throws Exception {
+    public void testFindById() throws Exception{
+        Owner owner = new Owner("Saint", "G.");
         //GIVEN
-        Mockito.when(ownerService.findById(any())).thenReturn(new OwnerDto(1L, "Mircea", "Mircea"));
+        Mockito.when(petService.findById(ArgumentMatchers.any())).thenReturn(new PetDto(1L, "Sisi", "Corgi",LocalDate.now(), owner));
 
         //WHEN
-        String mvcResultAsString = mvc.perform(MockMvcRequestBuilders.get("/owners/" + 1)
-                        .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
-                        .andReturn().getResponse().getContentAsString();
+        String mvcResultAsString = mvc.perform(MockMvcRequestBuilders.get("/pets/" + 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
 
         //THEN
-        OwnerDto response = new ObjectMapper().readValue(mvcResultAsString, OwnerDto.class);
+        PetDto response = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(mvcResultAsString, PetDto.class);
         Assertions.assertNotNull(response);
-        Assertions.assertEquals("Mircea", response.getFirstName());
-        Assertions.assertEquals("Mircea", response.getLastName());
+        Assertions.assertEquals("Sisi", response.getNamePet());
+        Assertions.assertEquals("Corgi", response.getPetType());
+        Assertions.assertEquals(LocalDate.now(), response.getBirthDate());
+        Assertions.assertEquals(owner, response.getOwner());
     }
 
     //Tests findAll
     @Test
     public void testFindAllOk() throws Exception
     {
-        OwnerDto o1 = new OwnerDto(1L, "Andreea", "B.");
-        OwnerDto o2 = new OwnerDto(2L, "Saint", "G.");
+        PetDto p1 = new PetDto(1L, "a", "a");
+        PetDto p2 = new PetDto(1L, "a", "a");
 
-        List<OwnerDto> allOwners = Arrays.asList(o1, o2);
+        List<PetDto> allPets = Arrays.asList(p1, p2);
 
         //GIVEN
-        Mockito.when(ownerService.findAll()).thenReturn(allOwners);
+        Mockito.when(petService.findAll()).thenReturn(allPets);
 
         //WHEN
-        mvc.perform(MockMvcRequestBuilders.get("/owners")
+        mvc.perform(MockMvcRequestBuilders.get("/pets")
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$", hasSize(allOwners.size())));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
-
-    //Tests if the validation works
+    //Tests if validation works
     @Test
     public void postRequestValidationPassed() throws Exception{
-        Owner o1 = new Owner("Andreea", "B.");
-
+        Pet p1 = new Pet("Aa", "Ba");
         //GIVEN
-        Mockito.doNothing().when(ownerService).add(o1);
+        Mockito.doNothing().when(petService).add(p1);
 
         //WHEN
-        mvc.perform(MockMvcRequestBuilders.post("/owners")
-                        .content(asJsonString(o1))
+        mvc.perform(MockMvcRequestBuilders.post("/pets")
+                        .content(asJsonString(p1))
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
     }
 
     @Test
     public void postRequestValidationFailed() throws Exception{
-        Owner o1 = new Owner("", "");
-
+        Pet p1 = new Pet("", "");
         //GIVEN
-        Mockito.doNothing().when(ownerService).add(o1);
+        Mockito.doNothing().when(petService).add(p1);
 
         //WHEN
-        mvc.perform(MockMvcRequestBuilders.post("/owners")
-                        .content(asJsonString(o1))
+        mvc.perform(MockMvcRequestBuilders.post("/pets")
+                        .content(asJsonString(p1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-    }
-
-    //Tests if count works
-    @Test
-    public void testCountOk() throws Exception
-    {
-        OwnerDto o1 = new OwnerDto(1L, "Andreea", "B.");
-        OwnerDto o2 = new OwnerDto(2L, "Saint", "G.");
-        OwnerDto o3 = new OwnerDto(3L, "Saint", "G.");
-
-        //List<OwnerDto> allOwners = Arrays.asList(o1, o2, o3);
-
-        //GIVEN Pretty sure this is useless
-        //Mockito.when(ownerService.count()).thenReturn(3L);
-
-        //WHEN
-        mvc.perform(MockMvcRequestBuilders.get("/owners/count")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
     }
 
     //Tests update
     @Test
     public void putRequest() throws Exception{
-        Owner o1 = new Owner(1L, "test", "t.");
-        Owner o2 = new Owner(2L, "Andreea", "B.");
+        Pet p1 = new Pet(1L, "a", "a");
+        Pet p2 = new Pet(2L, "b", "b");
 
         //GIVEN
-        Mockito.doNothing().when(ownerService).add(o1);
-        Mockito.doNothing().when(ownerService).update(1L, o2);
+        Mockito.doNothing().when(petService).add(p1);
+        Mockito.doNothing().when(petService).update(1L, p2);
 
         //WHEN
-        mvc.perform(MockMvcRequestBuilders.put("/owners/" + 1)
-                        .content(asJsonString(o2))
+        mvc.perform(MockMvcRequestBuilders.put("/pets/" + 1)
+                        .content(asJsonString(p2))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -144,21 +129,20 @@ public class OwnerControllerTest {
     //Tests delete
     @Test
     public void deleteRequest() throws Exception{
-        Owner o1 = new Owner(1L, "test", "t.");
+        Pet p1 = new Pet(1L, "test", "t.");
 
         //GIVEN
-        Mockito.doNothing().when(ownerService).add(o1);
+        Mockito.doNothing().when(petService).deleteById(1L);
 
         //WHEN
-        mvc.perform(MockMvcRequestBuilders.delete("/owners/" + 1)
-                        .content(asJsonString(o1))
+        mvc.perform(MockMvcRequestBuilders.delete("/pets/" + 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
-    //Tests getPets
+    //Tests findByOwner
     @Test
-    public void testFindAllPets() throws Exception
+    public void testFindBYOwner() throws Exception
     {
         Owner o1 = new Owner(1L, "Andreea", "B.");
         Owner o2 = new Owner(2L, "Saint", "G.");
@@ -172,23 +156,21 @@ public class OwnerControllerTest {
         List<PetDto> allPetso2 = Arrays.asList(p4, p5);
 
         //GIVEN
-        Mockito.when(ownerService.getPets(1L)).thenReturn(allPetso1);
+        Mockito.when(petService.findByOwner(1L)).thenReturn(allPetso1);
 
         //WHEN
-        mvc.perform(MockMvcRequestBuilders.get("/owners/" + o1.getIdOwner() + "/pets")
+        mvc.perform(MockMvcRequestBuilders.get("/pets/owner/" + o1.getIdOwner())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));
     }
 
-    //Tests getVisits
+    //Tests findPetsVisits
     @Test
-    public void testFindAllVisits() throws Exception
+    public void testFindVisits() throws Exception
     {
-        Owner o1 = new Owner(1L, "Andreea", "B.");
-        Owner o2 = new Owner(2L, "Saint", "G.");
-        Pet p1 = new Pet("a", "a", o1);
-        Pet p2 = new Pet("a", "a", o2);
+        Pet p1 = new Pet(1L, "a", "a");
+        Pet p2 = new Pet(2L, "a", "a");
         Vet v1 = new Vet("te", "st");
         VisitDto vi1 = new VisitDto(3L, "a", LocalDate.now(), p1, v1);
         VisitDto vi2 = new VisitDto(4L, "a", LocalDate.now(), p1, v1);
@@ -199,23 +181,13 @@ public class OwnerControllerTest {
         List<VisitDto> allVisitso1 = Arrays.asList(vi1, vi2, vi3);
         List<VisitDto> allVisitso2 = Arrays.asList(vi4, vi5);
 
-
         //GIVEN
-        Mockito.when(ownerService.getVisits(1L)).thenReturn(allVisitso1);
+        Mockito.when(petService.findPetsVisits(1L)).thenReturn(allVisitso1);
 
         //WHEN
-        mvc.perform(MockMvcRequestBuilders.get("/owners/" + o1.getIdOwner() + "/visits")
+        mvc.perform(MockMvcRequestBuilders.get("/pets/" + p1.getIdPet() + "/visits")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));
-    }
-
-    //Methods
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }

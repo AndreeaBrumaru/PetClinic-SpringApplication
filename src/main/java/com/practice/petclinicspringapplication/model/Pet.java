@@ -20,6 +20,13 @@ public class Pet{
     private Owner owner;
 
     //Constructors
+
+    public Pet(Long id, String namePet, String petType) {
+        this.id = id;
+        this.namePet = namePet;
+        this.petType = petType;
+    }
+
     public Pet(String namePet, LocalDate birthDate, String petType, Owner owner) {
         this.namePet = namePet;
         this.birthDate = birthDate;

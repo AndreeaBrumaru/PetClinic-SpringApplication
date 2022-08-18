@@ -19,6 +19,12 @@ public class PetDto {
     public PetDto() {
     }
 
+    public PetDto(Long id, String namePet, String petType) {
+        this.id = id;
+        this.namePet = namePet;
+        this.petType = petType;
+    }
+
     public PetDto(Long id, String namePet, String petType, LocalDate birthDate, Owner owner) {
         this.id = id;
         this.namePet = namePet;
