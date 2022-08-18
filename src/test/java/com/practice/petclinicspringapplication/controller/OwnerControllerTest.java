@@ -82,6 +82,7 @@ public class OwnerControllerTest {
         Owner o1 = new Owner("Andreea", "B.");
 
         //GIVEN
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(o1);
         Mockito.doNothing().when(ownerService).add(o1);
 
         //WHEN
@@ -96,6 +97,7 @@ public class OwnerControllerTest {
         Owner o1 = new Owner("", "");
 
         //GIVEN
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(o1);
         Mockito.doNothing().when(ownerService).add(o1);
 
         //WHEN
@@ -105,25 +107,6 @@ public class OwnerControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    //Tests if count works
-    @Test
-    public void testCountOk() throws Exception
-    {
-        OwnerDto o1 = new OwnerDto(1L, "Andreea", "B.");
-        OwnerDto o2 = new OwnerDto(2L, "Saint", "G.");
-        OwnerDto o3 = new OwnerDto(3L, "Saint", "G.");
-
-        //List<OwnerDto> allOwners = Arrays.asList(o1, o2, o3);
-
-        //GIVEN Pretty sure this is useless
-        //Mockito.when(ownerService.count()).thenReturn(3L);
-
-        //WHEN
-        mvc.perform(MockMvcRequestBuilders.get("/owners/count")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
     //Tests update
     @Test
     public void putRequest() throws Exception{
@@ -131,7 +114,7 @@ public class OwnerControllerTest {
         Owner o2 = new Owner(2L, "Andreea", "B.");
 
         //GIVEN
-        Mockito.doNothing().when(ownerService).add(o1);
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(o2);
         Mockito.doNothing().when(ownerService).update(1L, o2);
 
         //WHEN
@@ -147,7 +130,7 @@ public class OwnerControllerTest {
         Owner o1 = new Owner(1L, "test", "t.");
 
         //GIVEN
-        Mockito.doNothing().when(ownerService).add(o1);
+        Mockito.doNothing().when(ownerService).deleteById(o1.getIdOwner());
 
         //WHEN
         mvc.perform(MockMvcRequestBuilders.delete("/owners/" + 1)

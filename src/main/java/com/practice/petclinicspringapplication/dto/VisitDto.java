@@ -16,6 +16,19 @@ public class VisitDto {
     private Vet vet;
 
     //Constructors
+    public VisitDto(Long id, String reasonForVisit, Pet pet, Vet vet) {
+        this.id = id;
+        this.reasonForVisit = reasonForVisit;
+        this.pet = pet;
+        this.vet = vet;
+    }
+
+    public VisitDto(Long id, String reasonForVisit, LocalDate dateOfVisit) {
+        this.id = id;
+        this.reasonForVisit = reasonForVisit;
+        this.dateOfVisit = dateOfVisit;
+    }
+
     public VisitDto() {
     }
 

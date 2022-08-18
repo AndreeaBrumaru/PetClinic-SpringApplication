@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Transient;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -86,7 +85,7 @@ public class VisitController {
 
     //Update a visit
     @PutMapping("/visits/{id}")
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestParam Long petId, @RequestParam Long vetId, @Valid @RequestBody VisitDto visitDto) throws ParseException {
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestParam(required = false) Long petId, @RequestParam(required = false) Long vetId, @Valid @RequestBody VisitDto visitDto) throws ParseException {
         Visit visit = convertToEntity(visitDto);
         if(petId != null && vetId != null)
         {
@@ -106,7 +105,6 @@ public class VisitController {
     }
 
     //Convert to Entity
-    @Transient
     private Visit convertToEntity(VisitDto visitDto) throws ParseException
     {
         return modelMapper.map(visitDto, Visit.class);

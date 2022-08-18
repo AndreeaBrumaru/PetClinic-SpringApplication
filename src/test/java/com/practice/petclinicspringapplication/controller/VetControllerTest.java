@@ -24,6 +24,7 @@ import java.util.List;
 
 import static com.practice.petclinicspringapplication.controller.OwnerControllerTest.asJsonString;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -80,6 +81,7 @@ public class VetControllerTest {
         Vet o1 = new Vet("Andreea", "B.");
 
         //GIVEN
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(o1);
         Mockito.doNothing().when(vetService).add(o1);
 
         //WHEN
@@ -94,6 +96,7 @@ public class VetControllerTest {
         Vet o1 = new Vet("", "");
 
         //GIVEN
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(o1);
         Mockito.doNothing().when(vetService).add(o1);
 
         //WHEN
@@ -110,7 +113,7 @@ public class VetControllerTest {
         Vet o2 = new Vet(2L, "Andreea", "B.");
 
         //GIVEN
-        Mockito.doNothing().when(vetService).add(o1);
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(o2);
         Mockito.doNothing().when(vetService).update(1L, o2);
 
         //WHEN

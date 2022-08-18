@@ -11,7 +11,9 @@ import com.practice.petclinicspringapplication.repository.OwnerRepo;
 import com.practice.petclinicspringapplication.service.IPetService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import java.util.List;
 
 import static com.practice.petclinicspringapplication.controller.OwnerControllerTest.asJsonString;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,6 +44,9 @@ public class PetControllerTest {
     private OwnerRepo ownerRepo;
     @MockBean
     private ModelMapper modelMapper;
+
+    @Captor
+    private ArgumentCaptor<Pet> petArgumentCaptor;
 
     //Tests findById
     @Test
@@ -87,19 +93,24 @@ public class PetControllerTest {
     public void postRequestValidationPassed() throws Exception{
         Pet p1 = new Pet("Aa", "Ba");
         //GIVEN
-        Mockito.doNothing().when(petService).add(p1);
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(p1);
+        Mockito.doNothing().when(petService).add(petArgumentCaptor.capture());
 
         //WHEN
         mvc.perform(MockMvcRequestBuilders.post("/pets")
                         .content(asJsonString(p1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        Pet expectedValue = petArgumentCaptor.getValue();
+        Assertions.assertNotNull(expectedValue);
     }
 
     @Test
     public void postRequestValidationFailed() throws Exception{
         Pet p1 = new Pet("", "");
         //GIVEN
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(p1);
         Mockito.doNothing().when(petService).add(p1);
 
         //WHEN
@@ -116,7 +127,7 @@ public class PetControllerTest {
         Pet p2 = new Pet(2L, "b", "b");
 
         //GIVEN
-        Mockito.doNothing().when(petService).add(p1);
+        Mockito.when(modelMapper.map(any(), any())).thenReturn(p2);
         Mockito.doNothing().when(petService).update(1L, p2);
 
         //WHEN

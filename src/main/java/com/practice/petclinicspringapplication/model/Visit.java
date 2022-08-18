@@ -22,6 +22,26 @@ public class Visit {
     private Vet vet;
 
     //Constructor
+    public Visit(Long id, String reasonForVisit) {
+        this.id = id;
+        this.reasonForVisit = reasonForVisit;
+    }
+
+    public Visit(Long id, String reasonForVisit, Pet pet, Vet vet) {
+        this.id = id;
+        this.reasonForVisit = reasonForVisit;
+        this.pet = pet;
+        this.vet = vet;
+    }
+
+    public Visit(Long id, String reasonForVisit, LocalDate dateOfVisit, Pet pet, Vet vet) {
+        this.id = id;
+        this.reasonForVisit = reasonForVisit;
+        this.dateOfVisit = dateOfVisit;
+        this.pet = pet;
+        this.vet = vet;
+    }
+
     public Visit(String reasonForVisit, LocalDate dateOfVisit, Pet pet, Vet vet) {
         this.reasonForVisit = reasonForVisit;
         this.dateOfVisit = dateOfVisit;
